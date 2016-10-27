@@ -16,9 +16,12 @@ public class Tracer {
 		List<GeometricObject> objs = Main.world.objects;
 		Color color = Main.world.background;
 		for (int i = 0; i < objs.size(); i++) {
-			if (objs.get(i).hit(ray) != 0.0 && objs.get(i).hit(ray) < min) {
+			double temp = objs.get(i).hit(ray);
+			if (temp != 0.0 && temp < min) {
 				color = objs.get(i).color;
+				min = temp;
 			}
 		}
+		Main.image.buffer.setRGB(x, y, color.toInteger());
 	}
 }
