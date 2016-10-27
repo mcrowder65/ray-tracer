@@ -73,6 +73,20 @@ public class Sphere {
 		// t2 = (-B - sqrt(B^2 - 4AC)) / 2
 		double t2 = (-B - sqrt(pow(B) - 4 * A * C)) / 2;
 		// TODO finish this
+		if (t1 == -B / 2) {
+
+		}
+		if (t2 == -B / 2) {
+
+		}
+
+		if (t1 < 0 && t2 > 0) {
+			// t2 correct answer
+		}
+
+		if (t1 > 0 && t2 > 0) {
+			// t1 is correct answer
+		}
 		// https://docs.google.com/presentation/d/1WB8-fzuHbwogCQVe6BDky4l3IAaAqsLTWcEud7_cUVM/edit#slide=id.p13
 		return false;
 	}
