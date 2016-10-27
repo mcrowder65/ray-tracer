@@ -16,10 +16,10 @@ public class Main {
 
 	public static void main(String[] args) {
 		long start = System.nanoTime();
-		world = new World(1600, 900, 1.0);
+		world = new World(1600, 900, 0.3);
 		image = new Image("Image.png");
 		tracer = new Tracer();
-		sampler = new RegularSample(8);
+		sampler = new RegularSample(4);
 		projection = new Orthographic();
 		for (int y = 0; y < world.viewplane.height; y++) {
 			for (int x = 0; x < world.viewplane.width; x++) {
