@@ -28,4 +28,12 @@ public class Point3D {
 	public Point3D sub(Point3D point) {
 		return new Point3D(this.x - point.x, this.y - point.y, this.z - point.z);
 	}
+
+	public double dot(Point3D point) {
+		return this.x * point.x + this.y * point.y + this.z * point.z;
+	}
+
+	public double dot(Vector3D vector) {
+		return this.x * vector.x + this.y * vector.y + this.z * vector.z;
+	}
 }
