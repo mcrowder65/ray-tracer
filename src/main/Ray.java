@@ -9,6 +9,10 @@ public class Ray {
 		this.direction = direction;
 	}
 
+	public Tuple rayPlaneIntersection(Tuple plane) {
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		return "[origin=" + origin + ", direction=" + direction + "]";

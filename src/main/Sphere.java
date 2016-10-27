@@ -66,29 +66,29 @@ public class Sphere {
 		double C = pow(Xo) - 2 * Xo * Xc + pow(Xc) + pow(Yo) - 2 * Yo * Yc + pow(Yc) + pow(Zo) - 2 * Zo * Zc + pow(Zc)
 				- pow(this.radius);
 		// 0 = At^2 + Bt + C
+		double D = pow(B) - 4 * C;
 
-		// t1 = (-B + sqrt(B^2 - 4AC)) / 2
-		double t1 = (-B + sqrt(pow(B) - 4 * A * C)) / 2;
-
-		// t2 = (-B - sqrt(B^2 - 4AC)) / 2
-		double t2 = (-B - sqrt(pow(B) - 4 * A * C)) / 2;
-		// TODO finish this
-		if (t1 == -B / 2) {
-
+		if (D < 0) { // no intersection point
+			return false;
 		}
-		if (t2 == -B / 2) {
+		double t = -1;
+		double t0 = (-B - sqrt(D)) / 2;
 
+		if (t0 <= 0) {
+			double t1 = (-B + sqrt(D)) / 2;
+			if (t1 <= 0) {// intersection point behind ray
+				return false;
+			} else {
+				t = t1;
+			}
+		} else {
+			t = t0;
 		}
-
-		if (t1 < 0 && t2 > 0) {
-			// t2 correct answer
-		}
-
-		if (t1 > 0 && t2 > 0) {
-			// t1 is correct answer
-		}
-		// https://docs.google.com/presentation/d/1WB8-fzuHbwogCQVe6BDky4l3IAaAqsLTWcEud7_cUVM/edit#slide=id.p13
-		return false;
+		// p = r(t) = r0 + rDt
+		Tuple direction = new Tuple(ray.direction.x * t, ray.direction.y * t, ray.direction.z * t);
+		Ray p = new Ray(ray.origin, direction);
+		// Tuple n = new Tuple(sphere.x)
+		return true;
 	}
 
 	/**
