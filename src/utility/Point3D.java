@@ -29,6 +29,10 @@ public class Point3D {
 		return new Point3D(this.x - point.x, this.y - point.y, this.z - point.z);
 	}
 
+	public Vector3D subVec(Point3D point) {
+		return new Vector3D(this.x - point.x, this.y - point.y, this.z - point.z);
+	}
+
 	public double dot(Point3D point) {
 		return this.x * point.x + this.y * point.y + this.z * point.z;
 	}

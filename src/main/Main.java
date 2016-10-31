@@ -1,11 +1,12 @@
 package main;
 
-import projection.Orthographic;
+import projection.Perspective;
 import projection.Projection;
 import sampling.RegularSample;
 import sampling.Sampler;
 import scene.World;
 import utility.Image;
+import utility.Point3D;
 
 public class Main {
 	public static World world;
@@ -16,11 +17,11 @@ public class Main {
 
 	public static void main(String[] args) {
 		long start = System.nanoTime();
-		world = new World(1600, 900, 0.3);
+		world = new World(1600, 900, 1.0);
 		image = new Image("Image.png");
 		tracer = new Tracer();
 		sampler = new RegularSample(4);
-		projection = new Orthographic();
+		projection = new Perspective(new Point3D(-200, 200.0, 600), new Point3D(0.0, 0.0, 0.0), 30);
 		for (int y = 0; y < world.viewplane.height; y++) {
 			for (int x = 0; x < world.viewplane.width; x++) {
 				tracer.trace(x, y);

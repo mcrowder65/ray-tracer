@@ -10,13 +10,15 @@ public class Perspective extends Projection {
 		this.eye = new Point3D(eye);
 		this.lookat = new Point3D(lookat);
 		this.distance = Main.world.viewplane.height / 2 / Math.tan(Math.toRadians(FOV));
-
+		compute_uvw();
 	}
 
 	@Override
 	public Ray createRay(Point2D point) {
-		// TODO Auto-generated method stub
-		return null;
+		Ray ray = new Ray(new Point3D(eye), u.mult(point.x).add(v.mult(point.y).sub(w.mult(distance))));
+
+		ray.direction.normalize();
+		return ray;
 	}
 
 }

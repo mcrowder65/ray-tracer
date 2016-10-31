@@ -25,6 +25,10 @@ public class Vector3D {
 		return new Vector3D(this.x + vector.x, this.y + vector.y, this.z + vector.z);
 	}
 
+	public Vector3D mult(double scalar) {
+		return new Vector3D(x * scalar, y * scalar, z * scalar);
+	}
+
 	public Vector3D sub(Vector3D vector) {
 		return new Vector3D(this.x - vector.x, this.y - vector.y, this.z - vector.z);
 	}
@@ -39,6 +43,11 @@ public class Vector3D {
 
 	public double dot(Normal normal) {
 		return x * normal.x + y * normal.y + z * normal.z;
+	}
+
+	public Vector3D cross(Vector3D vector) {
+		return new Vector3D(this.y * vector.z - this.z * vector.y, this.z * vector.x - this.x * vector.z,
+				this.x * vector.y - this.y * vector.x);
 	}
 
 	public void normalize() {

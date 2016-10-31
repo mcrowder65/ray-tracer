@@ -12,4 +12,14 @@ public abstract class Projection {
 	public Vector3D u, v, w;
 
 	public abstract Ray createRay(Point2D point);
+
+	public void compute_uvw() {
+		w = eye.subVec(lookat);
+		w.normalize();
+		Vector3D up = new Vector3D(0.00424, 1.0, 0.00764);
+		u = up.cross(w);
+		u.normalize();
+		v = w.cross(u);
+		v.normalize();
+	}
 }
