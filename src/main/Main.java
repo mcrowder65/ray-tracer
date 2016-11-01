@@ -21,7 +21,7 @@ public class Main {
 		image = new Image("Image.png");
 		tracer = new Tracer();
 		sampler = new RegularSample(4);
-		projection = new Perspective(new Point3D(-200, 200.0, 600), new Point3D(0.0, 0.0, 0.0), 30);
+		projection = new Perspective(new Point3D(0, 0, 1), new Point3D(0.0, 0.0, 0.0), 28);
 		for (int y = 0; y < world.viewplane.height; y++) {
 			for (int x = 0; x < world.viewplane.width; x++) {
 				tracer.trace(x, y);
