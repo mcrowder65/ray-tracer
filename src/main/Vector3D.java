@@ -1,4 +1,4 @@
-package utility;
+package main;
 
 public class Vector3D {
 	public double x, y, z;
@@ -25,7 +25,7 @@ public class Vector3D {
 		return new Vector3D(this.x + vector.x, this.y + vector.y, this.z + vector.z);
 	}
 
-	public Vector3D mult(double scalar) {
+	public Vector3D multiply(double scalar) {
 		return new Vector3D(x * scalar, y * scalar, z * scalar);
 	}
 
@@ -37,23 +37,21 @@ public class Vector3D {
 		return this.x * vector.x + this.y * vector.y + this.z * vector.z;
 	}
 
-	public double dot(Point3D point) {
-		return this.x * point.x + this.y * point.y + this.z * point.z;
+	double magnitude() {
+		return Math.sqrt((x * x) + (y * y) + (z * z));
 	}
 
-	public double dot(Normal normal) {
-		return x * normal.x + y * normal.y + z * normal.z;
+	public Vector3D normalize() {
+		double magnitude = this.magnitude();
+		return new Vector3D(x / magnitude, y / magnitude, z / magnitude);
+	}
+
+	public Vector3D negative() {
+		return new Vector3D(-x, -y, -z);
 	}
 
 	public Vector3D cross(Vector3D vector) {
 		return new Vector3D(this.y * vector.z - this.z * vector.y, this.z * vector.x - this.x * vector.z,
 				this.x * vector.y - this.y * vector.x);
-	}
-
-	public void normalize() {
-		double magnitude = Math.sqrt(x * x + y * y + z * z);
-		x /= magnitude;
-		y /= magnitude;
-		z /= magnitude;
 	}
 }
