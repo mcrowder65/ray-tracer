@@ -39,7 +39,7 @@ public class Sphere extends Object {
 	@Override
 	public Vector3D getNormalAt(Vector3D point) {
 		Vector3D normal = point.add(center.negative()).normalize();
-		return normal;
+		return new Vector3D(normal);
 	}
 
 	@Override
@@ -70,6 +70,42 @@ public class Sphere extends Object {
 			// the ray missed the sphere
 			return -1;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((center == null) ? 0 : center.hashCode());
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(radius);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(java.lang.Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sphere other = (Sphere) obj;
+		if (center == null) {
+			if (other.center != null)
+				return false;
+		} else if (!center.equals(other.center))
+			return false;
+		if (color == null) {
+			if (other.color != null)
+				return false;
+		} else if (!color.equals(other.color))
+			return false;
+		if (Double.doubleToLongBits(radius) != Double.doubleToLongBits(other.radius))
+			return false;
+		return true;
 	}
 
 }

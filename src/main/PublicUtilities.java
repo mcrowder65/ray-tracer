@@ -1,8 +1,11 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class Utilities {
+public class PublicUtilities {
+	private static PrivateUtilities privateUtilities = new PrivateUtilities();
+
 	static int winningObjectIndex(ArrayList<Double> intersections) {
 
 		// prevent unnessary calculations
@@ -47,11 +50,28 @@ public class Utilities {
 		}
 	}
 
-	static Color specularHighlight(Color color, Object object) {
-		if (object.specularHighlight == null) {
-			return color;
+	static void exec(String command) {
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			System.out.println(command + " failed.");
 		}
-
-		return color;
 	}
+
+	static Color getPixel(Vector3D intersectionPosition, Vector3D intersectionRayDirection,
+			ArrayList<Object> sceneObjects, int indexOfWinningObject, Light lightSource, double ambientLight) {
+		// phong
+		// r = 2n (n dot l) - l
+		// cl dot cp max(0, edotr) ^ p
+		Object winningObject = sceneObjects.get(indexOfWinningObject);
+		Color finalColor = new Color(winningObject.getColor());
+
+		finalColor = privateUtilities.checkShadows(finalColor, winningObject, intersectionPosition, lightSource,
+				sceneObjects, indexOfWinningObject);
+		finalColor = privateUtilities.specularHighlight(finalColor, winningObject, intersectionPosition,
+				intersectionRayDirection, lightSource, sceneObjects, indexOfWinningObject);
+		finalColor = finalColor.clip();
+		return finalColor;
+	}
+
 }

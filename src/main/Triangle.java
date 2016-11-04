@@ -21,11 +21,54 @@ public class Triangle extends Object {
 		return getTriangleNormal();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((A == null) ? 0 : A.hashCode());
+		result = prime * result + ((B == null) ? 0 : B.hashCode());
+		result = prime * result + ((C == null) ? 0 : C.hashCode());
+		result = prime * result + ((color == null) ? 0 : color.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(java.lang.Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Triangle other = (Triangle) obj;
+		if (A == null) {
+			if (other.A != null)
+				return false;
+		} else if (!A.equals(other.A))
+			return false;
+		if (B == null) {
+			if (other.B != null)
+				return false;
+		} else if (!B.equals(other.B))
+			return false;
+		if (C == null) {
+			if (other.C != null)
+				return false;
+		} else if (!C.equals(other.C))
+			return false;
+		if (color == null) {
+			if (other.color != null)
+				return false;
+		} else if (!color.equals(other.color))
+			return false;
+		return true;
+	}
+
 	private Vector3D getTriangleNormal() {
 		Vector3D CA = new Vector3D(C.x - A.x, C.y - A.y, C.z - A.z);
 		Vector3D BA = new Vector3D(B.x - A.x, B.y - A.y, B.z - A.z);
 		Vector3D normal = CA.cross(BA).normalize();
-		return normal;
+		return new Vector3D(normal);
 	}
 
 	public double getTriangleDistance() {
