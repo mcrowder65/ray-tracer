@@ -14,7 +14,7 @@ public class PrivateUtilities {
 			return new Color(finalColor);
 		}
 
-		// TODO implement specularhighlight
+		// TODO implement specularhighlight, check slides #16
 		// special [0-1]
 		Vector3D winningObjectNormal = sceneObjects.get(indexOfWinningObject).getNormalAt(intersectionPosition);
 		Vector3D lightDirection = lightSource.getPosition().add(intersectionPosition.negative()).normalize();
