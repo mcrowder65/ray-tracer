@@ -15,6 +15,11 @@ public class Vector3D {
 		this.z = z;
 	}
 
+	@Override
+	public String toString() {
+		return "Vector3D [x=" + x + ", y=" + y + ", z=" + z + "]";
+	}
+
 	public Vector3D(Vector3D vector) {
 		this.x = vector.x;
 		this.y = vector.y;

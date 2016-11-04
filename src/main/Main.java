@@ -1,54 +1,17 @@
 package main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
-	public static Image image;
-
-	static int winningObjectIndex(ArrayList<Double> intersections) {
-
-		// prevent unnessary calculations
-		if (intersections.size() == 0) {
-			// if there are no intersections
-			return -1;
-		} else if (intersections.size() == 1) {
-			if (intersections.get(0) > 0) {
-				// if that intersection is greater than zero then its our index
-				// of minimum value
-				return 0;
-			} else {
-				// otherwise the only intersection value is negative
-				return -1;
-			}
-		} else {
-			// otherwise there is more than one intersection
-			// first find the maximum value
-
-			double max = 0;
-			for (int i = 0; i < intersections.size(); i++) {
-				if (max < intersections.get(i)) {
-					max = intersections.get(i);
-				}
-			}
-			int indexOfMinimumValue = -1;
-			// then starting from the maximum value find the minimum positive
-			// value
-			if (max > 0) {
-				// we only want positive intersections
-				for (int index = 0; index < intersections.size(); index++) {
-					if (intersections.get(index) > 0 && intersections.get(index) <= max) {
-						max = intersections.get(index);
-						indexOfMinimumValue = index;
-					}
-				}
-				return indexOfMinimumValue;
-			} else {
-				// all the intersections were negative
-				return -1;
-			}
-		}
-	}
+	static Image image;
+	static final Color black = new Color(0, 0, 0, 0);
+	static final Color white = new Color(1.0, 1.0, 1.0, 0);
+	static final Color blue = new Color(0, 0, 1, 0);
+	static final Color green = new Color(0, 1, 0, .5);
+	static final Color yellow = new Color(1, 1, 0, 0);
+	static final Color red = new Color(1, 0, 0, .5);
 
 	static Color getColorAt(Vector3D intersectionPosition, Vector3D intersectionRayDirection,
 			ArrayList<Object> sceneObjects, int indexOfWinningObject, Light lightSource, double ambientLight) {
@@ -59,55 +22,49 @@ public class Main {
 		Vector3D winningObjectNormal = new Vector3D(
 				sceneObjects.get(indexOfWinningObject).getNormalAt(intersectionPosition));
 		Color finalColor = winningObjectColor.scale(ambientLight);
-		Vector3D lightDirection = lightSource.position;// .add(intersectionPosition.negative()).normalize();
-		// angle between winningObjectNormal and lightDirection
-		float cosineAngle = (float) winningObjectNormal.dot(lightDirection);
-		if (cosineAngle > 0) {
-			// test for shadows
-			// testing for shadows, cast a ray to the light
-			boolean shadowed = false;
+		Vector3D lightDirection = lightSource.position;
 
-			Vector3D distanceToLight = lightSource.position.add(intersectionPosition.negative()).normalize();
-			float distanceToLightMagnitude = (float) distanceToLight.magnitude();
+		// test for shadows
+		// testing for shadows, cast a ray to the light
+		Vector3D distanceToLight = lightSource.position.add(intersectionPosition.negative()).normalize();
+		float distanceToLightMagnitude = (float) distanceToLight.magnitude();
 
-			Ray shadowRay = new Ray(intersectionPosition,
-					lightSource.position.add(intersectionPosition.negative()).normalize());
+		Ray shadowRay = new Ray(intersectionPosition,
+				lightSource.position.add(intersectionPosition.negative()).normalize());
 
-			List<Double> secondaryIntersections = new ArrayList<>();
-			for (int objectIndex = 0; objectIndex < sceneObjects.size(); objectIndex++) {
+		List<Double> secondaryIntersections = new ArrayList<>();
+		for (int objectIndex = 0; objectIndex < sceneObjects.size(); objectIndex++) {
+			if (objectIndex != indexOfWinningObject) {
 				secondaryIntersections.add(sceneObjects.get(objectIndex).findIntersection(shadowRay));
 			}
 
-			for (int c = 0; c < secondaryIntersections.size(); c++) {
-				if (secondaryIntersections.get(c) > 0) {
-					if (secondaryIntersections.get(c) <= distanceToLightMagnitude) {
-						shadowed = true;
-						break;
-					}
-				}
+		}
 
+		for (int c = 0; c < secondaryIntersections.size(); c++) {
+			if (secondaryIntersections.get(c) > 0) {
+				if (secondaryIntersections.get(c) <= distanceToLightMagnitude) {
+					return black;
+				}
 			}
 
-			if (!shadowed) {
+		}
 
-				finalColor = finalColor.add(winningObjectColor.multiply(lightSource.color).scale(cosineAngle));
+		float cosineAngle = (float) winningObjectNormal.dot(lightDirection);
+		finalColor = new Color(finalColor.add(winningObjectColor.multiply(lightSource.color)));// .scale(cosineAngle));
 
-				if (0 < winningObjectColor.special && winningObjectColor.special <= 1) {
-					// special [0-1]
-					double dot1 = winningObjectNormal.dot(intersectionRayDirection.negative());
-					Vector3D scalar1 = new Vector3D(winningObjectNormal.multiply(dot1));
-					Vector3D add1 = new Vector3D(scalar1.add(intersectionRayDirection));
-					Vector3D scalar2 = new Vector3D(add1.multiply(2));
-					Vector3D add2 = new Vector3D(intersectionRayDirection.negative().add(scalar2));
-					Vector3D reflection_direction = new Vector3D(add2.normalize());
+		if (0 < winningObjectColor.special && winningObjectColor.special <= 1) {
+			// special [0-1]
+			double dot1 = winningObjectNormal.dot(intersectionRayDirection.negative());
+			Vector3D scalar1 = new Vector3D(winningObjectNormal.multiply(dot1));
+			Vector3D add1 = new Vector3D(scalar1.add(intersectionRayDirection));
+			Vector3D scalar2 = new Vector3D(add1.multiply(2));
+			Vector3D add2 = new Vector3D(intersectionRayDirection.negative().add(scalar2));
+			Vector3D reflection_direction = new Vector3D(add2.normalize());
 
-					double specular = reflection_direction.dot(lightDirection);
-					if (specular > 0) {
-						specular = Math.pow(specular, 10);
-						finalColor = finalColor.add(lightSource.color.scale(specular * winningObjectColor.special));
-					}
-				}
-
+			double specular = reflection_direction.dot(lightDirection);
+			if (specular > 0) {
+				specular = Math.pow(specular, 10);
+				finalColor = finalColor.add(lightSource.color.scale(specular * winningObjectColor.special));
 			}
 		}
 
@@ -116,33 +73,28 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		exec("rm scene.png");
+		exec("pkill Preview");
 		final int width = 640;
 		final int height = 480;
 		Image image = new Image("scene.png", width, height);
 		double ambientLight = -1;
-		Vector3D cameraPosition;
-		Vector3D lookAt;
+		Vector3D cameraPosition = null;
+		Vector3D lookAt = null;
 		List<Object> sceneObjects = new ArrayList<>();
 
-		Vector3D O = new Vector3D(0, 0, 0);
 		Vector3D Y = new Vector3D(0, -1, 0);
-		final String type = "diffuse";
-		Light lightSource;
+		String type = "scenell";
+		Light lightSource = null;
 		RGBType backgroundColor = new RGBType(0.2, 0.2, 0.2);
-		Color white = new Color(1.0, 1.0, 1.0, 0);
-		Color blue = new Color(0, 0, 1, 0);
-		Color green = new Color(0, 1, 0, .5);
-		Color yellow = new Color(1, 1, 0, 0);
-		Color red = new Color(1, 0, 0, .5);
-		if (type == "diffuse") {
+
+		if (type.equals("diffuse")) {
 			ambientLight = .2;
 			cameraPosition = new Vector3D(0, 0, 1);
 			lookAt = new Vector3D(0, 0, 0);
 
 			Vector3D lightPosition = new Vector3D(1, 0, 0);
 			lightSource = new Light(lightPosition, white);
-			// TODO spheres can't cast shadows on triangles.
-			// TODO triangles can't cast shadows on triangles but they can on
 			// spheres
 			Sphere sceneSphere1 = new Sphere(new Vector3D(.35, 0, -.1), 0.05, new Color(1, 1, 1, 1));
 			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
@@ -156,7 +108,7 @@ public class Main {
 			sceneObjects.add(sceneSphere3);
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
-		} else if (type == "scenell") {
+		} else if (type.equals("scenell")) {
 			ambientLight = .1;
 			cameraPosition = new Vector3D(0, 0, 1.2);
 			lookAt = new Vector3D(0, 0, 0);
@@ -172,7 +124,7 @@ public class Main {
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
 
-		} else if (type == "tutorial") {
+		} else if (type.equals("tutorial")) {
 			Y = new Vector3D(0, 1, 0);
 			ambientLight = .2;
 			cameraPosition = new Vector3D(3, 1.5, -4);
@@ -184,17 +136,11 @@ public class Main {
 					blue);
 			Triangle sceneTriangle2 = new Triangle(new Vector3D(-2, 0, 0), new Vector3D(-5, 3, 0),
 					new Vector3D(-5, 0, 3), blue);
-			// sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere1));
-			// sceneObjects.push_back(dynamic_cast<Object*>(&sceneSphere2));
-			// sceneObjects.push_back(dynamic_cast<Object*>(&sceneTriangle1));
+			sceneObjects.add(sceneSphere1);
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
-			// makeCube(Vector3D(1, 1, 1), Vector3D(-1, -1, -1), orange,
-			// sceneObjects);
 		}
 		double aspectratio = (double) width / (double) height;
-		int n = width * height;
-		int pixelIndex;
 
 		Vector3D differenceBetween = new Vector3D(cameraPosition.x - lookAt.x, cameraPosition.y - lookAt.y,
 				cameraPosition.z - lookAt.z);
@@ -208,7 +154,6 @@ public class Main {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 
-				pixelIndex = y * width + x; // iterates from 0 to 307199
 				xAmount = ((x + 0.5) / width) * aspectratio - (((width - height) / (double) height) / 2);
 				yAmount = ((height - y) + 0.5) / height;
 
@@ -223,7 +168,7 @@ public class Main {
 					double intersection = sceneObjects.get(index).findIntersection(cameraRay);
 					intersections.add(intersection);
 				}
-				int indexOfWinningObject = winningObjectIndex((ArrayList<Double>) intersections);
+				int indexOfWinningObject = Utilities.winningObjectIndex((ArrayList<Double>) intersections);
 				// no intersection, set to background color.
 				RGBType pixel = null;
 				if (indexOfWinningObject == -1) {
@@ -243,23 +188,19 @@ public class Main {
 			}
 		}
 		image.write("PNG");
+		exec("open scene.png");
+		if (!type.equals("tutorial")) {
+			exec("open examples/" + type + ".png");
+		}
 
 	}
 
-	// public static void main(String[] args) {
-	// long start = System.nanoTime();
-	// image = new Image("Image.png");
-	// tracer = new Tracer();
-	// for (int y = 0; y < world.viewplane.height; y++) {
-	// for (int x = 0; x < world.viewplane.width; x++) {
-	// tracer.trace(x, y);
-	// }
-	// }
-	// image.write("PNG");
-	//
-	// long end = System.nanoTime();
-	// System.out.println("Loop Time: " + (end - start) / 1000000000.0F);
-	//
-	// }
+	private static void exec(String command) {
+		try {
+			Runtime.getRuntime().exec(command);
+		} catch (IOException e) {
+			System.out.println(command + " failed.");
+		}
+	}
 
 }
