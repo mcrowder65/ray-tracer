@@ -6,12 +6,12 @@ import java.util.List;
 
 public class Main {
 	static Image image;
-	static final Color black = new Color(0, 0, 0, 0);
-	static final Color white = new Color(1.0, 1.0, 1.0, 0);
-	static final Color blue = new Color(0, 0, 1, 0);
-	static final Color green = new Color(0, 1, 0, .5);
-	static final Color yellow = new Color(1, 1, 0, 0);
-	static final Color red = new Color(1, 0, 0, .5);
+	static final Color black = new Color(0, 0, 0);
+	static final Color white = new Color(1.0, 1.0, 1.0);
+	static final Color blue = new Color(0, 0, 1);
+	static final Color green = new Color(0, 1, 0);
+	static final Color yellow = new Color(1, 1, 0);
+	static final Color red = new Color(1, 0, 0);
 
 	static Color getColorAt(Vector3D intersectionPosition, Vector3D intersectionRayDirection,
 			ArrayList<Object> sceneObjects, int indexOfWinningObject, Light lightSource, double ambientLight) {
@@ -48,25 +48,28 @@ public class Main {
 			}
 
 		}
-
-		float cosineAngle = (float) winningObjectNormal.dot(lightDirection);
-		finalColor = new Color(finalColor.add(winningObjectColor.multiply(lightSource.color)));// .scale(cosineAngle));
-
-		if (0 < winningObjectColor.special && winningObjectColor.special <= 1) {
-			// special [0-1]
-			double dot1 = winningObjectNormal.dot(intersectionRayDirection.negative());
-			Vector3D scalar1 = new Vector3D(winningObjectNormal.multiply(dot1));
-			Vector3D add1 = new Vector3D(scalar1.add(intersectionRayDirection));
-			Vector3D scalar2 = new Vector3D(add1.multiply(2));
-			Vector3D add2 = new Vector3D(intersectionRayDirection.negative().add(scalar2));
-			Vector3D reflection_direction = new Vector3D(add2.normalize());
-
-			double specular = reflection_direction.dot(lightDirection);
-			if (specular > 0) {
-				specular = Math.pow(specular, 10);
-				finalColor = finalColor.add(lightSource.color.scale(specular * winningObjectColor.special));
-			}
-		}
+		// TODO implement specularhighlight
+		// if (0 < winningObjectColor.get && winningObjectColor.special <= 1) {
+		// float cosineAngle = (float) winningObjectNormal.dot(lightDirection);
+		// finalColor = new
+		// Color(finalColor.add(winningObjectColor.multiply(lightSource.color)).scale(cosineAngle));
+		// // special [0-1]
+		// double dot1 =
+		// winningObjectNormal.dot(intersectionRayDirection.negative());
+		// Vector3D scalar1 = new Vector3D(winningObjectNormal.multiply(dot1));
+		// Vector3D add1 = new Vector3D(scalar1.add(intersectionRayDirection));
+		// Vector3D scalar2 = new Vector3D(add1.multiply(2));
+		// Vector3D add2 = new
+		// Vector3D(intersectionRayDirection.negative().add(scalar2));
+		// Vector3D reflection_direction = new Vector3D(add2.normalize());
+		//
+		// double specular = reflection_direction.dot(lightDirection);
+		// if (specular > 0) {
+		// specular = Math.pow(specular, 10);
+		// finalColor = finalColor.add(lightSource.color.scale(specular *
+		// winningObjectColor.special));
+		// }
+		// }
 
 		return finalColor.clip();
 
@@ -75,6 +78,7 @@ public class Main {
 	public static void main(String[] args) {
 		exec("rm scene.png");
 		exec("pkill Preview");
+
 		final int width = 640;
 		final int height = 480;
 		Image image = new Image("scene.png", width, height);
@@ -84,9 +88,9 @@ public class Main {
 		List<Object> sceneObjects = new ArrayList<>();
 
 		Vector3D Y = new Vector3D(0, -1, 0);
-		String type = "scenell";
+		String type = "diffuse";
 		Light lightSource = null;
-		RGBType backgroundColor = new RGBType(0.2, 0.2, 0.2);
+		RGB backgroundColor = new RGB(0.2, 0.2, 0.2);
 
 		if (type.equals("diffuse")) {
 			ambientLight = .2;
@@ -96,7 +100,7 @@ public class Main {
 			Vector3D lightPosition = new Vector3D(1, 0, 0);
 			lightSource = new Light(lightPosition, white);
 			// spheres
-			Sphere sceneSphere1 = new Sphere(new Vector3D(.35, 0, -.1), 0.05, new Color(1, 1, 1, 1));
+			Sphere sceneSphere1 = new Sphere(new Vector3D(.35, 0, -.1), 0.05, new Color(1, 1, 1));
 			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
 			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3, green);
 			Triangle sceneTriangle1 = new Triangle(new Vector3D(.3, -.3, -.4), new Vector3D(0, .3, -.1),
@@ -115,7 +119,7 @@ public class Main {
 
 			Vector3D lightPosition = new Vector3D(0, 1, 0);
 			lightSource = new Light(lightPosition, white);
-			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2, new Color(1, 1, 1, 1));
+			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2, new Color(1, 1, 1));
 			Triangle sceneTriangle1 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(1, .5, 0),
 					new Vector3D(0, -.5, -.5), blue);
 			Triangle sceneTriangle2 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(0, -.5, -.5),
@@ -170,9 +174,9 @@ public class Main {
 				}
 				int indexOfWinningObject = Utilities.winningObjectIndex((ArrayList<Double>) intersections);
 				// no intersection, set to background color.
-				RGBType pixel = null;
+				RGB pixel = null;
 				if (indexOfWinningObject == -1) {
-					pixel = new RGBType(backgroundColor.r, backgroundColor.g, backgroundColor.b);
+					pixel = new RGB(backgroundColor.r, backgroundColor.g, backgroundColor.b);
 				} else {
 					// determines the position and direction vectors at the
 					// point of intersection
@@ -182,7 +186,7 @@ public class Main {
 					// index coresponds to an object in our scene
 					Color intersectionColor = getColorAt(intersectionPosition, intersectingRayDirection,
 							(ArrayList<Object>) sceneObjects, indexOfWinningObject, lightSource, ambientLight);
-					pixel = new RGBType(intersectionColor.red, intersectionColor.green, intersectionColor.blue);
+					pixel = new RGB(intersectionColor.red, intersectionColor.green, intersectionColor.blue);
 				}
 				image.buffer.setRGB(x, y, pixel.toInteger());
 			}

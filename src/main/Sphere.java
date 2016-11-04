@@ -1,9 +1,29 @@
 package main;
 
 public class Sphere extends Object {
-	Vector3D center;
-	double radius;
-	Color color;
+	private Vector3D center;
+	private double radius;
+	private Color color;
+
+	public Vector3D getCenter() {
+		return center;
+	}
+
+	public void setCenter(Vector3D center) {
+		this.center = center;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
 	Sphere(Vector3D center, double radius, Color color) {
 		this.center = new Vector3D(center);

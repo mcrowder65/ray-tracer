@@ -1,9 +1,9 @@
 package main;
 
-public class RGBType {
+public class RGB {
 	public double r, g, b;
 
-	RGBType(double r, double g, double b) {
+	RGB(double r, double g, double b) {
 		this.r = r;
 		this.g = g;
 		this.b = b;

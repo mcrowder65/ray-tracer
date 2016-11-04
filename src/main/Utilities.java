@@ -46,4 +46,12 @@ public class Utilities {
 			}
 		}
 	}
+
+	static Color specularHighlight(Color color, Object object) {
+		if (object.specularHighlight == null) {
+			return color;
+		}
+
+		return color;
+	}
 }

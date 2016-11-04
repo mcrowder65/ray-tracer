@@ -1,13 +1,12 @@
 package main;
 
 public class Color {
-	public double red, green, blue, special;
+	public double red, green, blue;
 
-	public Color(double red, double green, double blue, double special) {
+	public Color(double red, double green, double blue) {
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
-		this.special = special;
 	}
 
 	public Color(Color color) {
@@ -15,7 +14,6 @@ public class Color {
 		this.red = color.red;
 		this.green = color.green;
 		this.blue = color.blue;
-		this.special = color.special;
 	}
 
 	public double brightness() {
@@ -23,19 +21,19 @@ public class Color {
 	}
 
 	Color scale(double scalar) {
-		return new Color(red * scalar, green * scalar, blue * scalar, special);
+		return new Color(red * scalar, green * scalar, blue * scalar);
 	}
 
 	public Color add(Color color) {
-		return new Color(red + color.red, green + color.green, blue + color.blue, special);
+		return new Color(red + color.red, green + color.green, blue + color.blue);
 	}
 
 	public Color multiply(Color color) {
-		return new Color(red * color.red, green * color.green, blue * color.blue, special);
+		return new Color(red * color.red, green * color.green, blue * color.blue);
 	}
 
 	Color average(Color color) {
-		return new Color((red + color.red) / 2, (green + color.green) / 2, (blue + color.blue) / 2, special);
+		return new Color((red + color.red) / 2, (green + color.green) / 2, (blue + color.blue) / 2);
 	}
 
 	Color clip() {
@@ -65,7 +63,7 @@ public class Color {
 			blue = 0;
 		}
 
-		return new Color(red, green, blue, special);
+		return new Color(red, green, blue);
 	}
 
 }
