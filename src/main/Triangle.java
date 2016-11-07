@@ -73,12 +73,13 @@ public class Triangle extends Object {
 
 	public double getTriangleDistance() {
 		Vector3D normal = getTriangleNormal();
-		double distance = normal.dot(A);
+		double distance = normal.dot(B);
 		return distance;
 	}
 
 	@Override
 	public double findIntersection(Ray ray) {
+
 		Vector3D normal = getTriangleNormal();
 		double distance = getTriangleDistance();
 		double a = ray.direction.dot(normal);
@@ -116,6 +117,7 @@ public class Triangle extends Object {
 				return -1;
 			}
 		}
+
 	}
 
 }

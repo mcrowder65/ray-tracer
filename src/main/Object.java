@@ -24,17 +24,6 @@ public abstract class Object {
 		this.specularHighlight = specularHighlight;
 	}
 
-	public RGB getMaterialDiffuse() {
-		if (materialDiffuse == null) {
-			System.out.println("material diffuse is null!!!!");
-		}
-		return materialDiffuse;
-	}
-
-	public void setMaterialDiffuse(RGB materialDiffuse) {
-		this.materialDiffuse = materialDiffuse;
-	}
-
 	public abstract boolean equals(java.lang.Object obj);
 
 	public abstract int hashCode();

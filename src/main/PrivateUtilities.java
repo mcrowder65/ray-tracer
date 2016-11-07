@@ -11,7 +11,6 @@ public class PrivateUtilities {
 			double ambientLight, Vector3D eye) {
 
 		Vector3D n = winningObject.getNormalAt(intersectionPosition);
-		Color Cr = new Color(winningObject.getMaterialDiffuse());
 		Color Ca = new Color(ambientLight);
 		Color Cl = new Color(lightSource.getColor());
 
@@ -21,16 +20,13 @@ public class PrivateUtilities {
 		Vector3D e = new Vector3D(eye);
 		// r = 2n(n dot l) - l
 
-		Vector3D r = new Vector3D(n.multiply(2).multiply(n.dot(l)).sub(l));
-
 		// color = Cr (Ca + Cl Max(0, n dot l)) + ClCp max(0, e dot r) ^ p
 		// Cr(Ca + Cl max (0, n dot l))
-		Color kd = new Color(0);
-		Color diffuse = Cr.multiply((Cl.multiply(Math.max(0, n.dot(l)))));
+		Color diffuse = finalColor.multiply(Ca.add(Cl.multiply(Math.max(0, n.dot(l)))));
+		Vector3D r = new Vector3D(n.multiply(2).multiply(n.dot(l)).sub(l));
 		Color specular = Cl.multiply(Cp).multiply(Math.pow(Math.max(0, e.dot(r)), p));
-		Color color = new Color(diffuse.add(specular));
-		Color ambient = Ca.multiply(winningObject.getColor()).multiply(lightSource.getColor());
-		return new Color(color.add(ambient));
+		Color surfaceColor = diffuse.add(specular);
+		return surfaceColor;
 
 	}
 

@@ -62,13 +62,13 @@ public class PublicUtilities {
 			ArrayList<Object> sceneObjects, int indexOfWinningObject, Light lightSource, double ambientLight,
 			Vector3D e) {
 		Object winningObject = sceneObjects.get(indexOfWinningObject);
-		Color finalColor = new Color(winningObject.getColor());
+		Color finalColor = null;
 
-		finalColor = privateUtilities.checkShadows(finalColor, winningObject, intersectionPosition, lightSource,
-				sceneObjects, indexOfWinningObject);
+		finalColor = privateUtilities.checkShadows(winningObject.getColor(), winningObject, intersectionPosition,
+				lightSource, sceneObjects, indexOfWinningObject);
 		if (!finalColor.equals(Main.black))
-			finalColor = privateUtilities.color(finalColor, winningObject, intersectionPosition, lightSource,
-					ambientLight, e);
+			finalColor = privateUtilities.color(winningObject.getColor(), winningObject, intersectionPosition,
+					lightSource, ambientLight, e);
 		finalColor = finalColor.clip();
 		return finalColor;
 	}

@@ -43,31 +43,26 @@ public class Main {
 			Vector3D lightPosition = new Vector3D(1, 0, 0);
 			lightSource = new Light(lightPosition, white);
 			// spheres
-			Sphere sceneSphere1 = new Sphere(new Vector3D(.35, 0, -.1), 0.05, new Color(1, 1, 1));
+			Sphere sceneSphere1 = new Sphere(new Vector3D(.35, 0, -.1), 0.05, white);
 			sceneSphere1.setSpecularHighlight(new RGB(1, 1, 1));
-			sceneSphere1.setMaterialDiffuse(new RGB(1, 1, 1));
 			sceneSphere1.setPhongConstant(4);
 
 			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
 			sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
-			sceneSphere2.setMaterialDiffuse(new RGB(1, 0, 0));
 			sceneSphere2.setPhongConstant(32);
 
 			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3, green);
 			sceneSphere3.setSpecularHighlight(new RGB(.5, 1, .5));
-			sceneSphere3.setMaterialDiffuse(new RGB(0, 1, 0));
 			sceneSphere3.setPhongConstant(32);
 
 			Triangle sceneTriangle1 = new Triangle(new Vector3D(.3, -.3, -.4), new Vector3D(0, .3, -.1),
 					new Vector3D(-.3, -.3, .2), blue);
 			sceneTriangle1.setSpecularHighlight(new RGB(1, 1, 1));
-			sceneTriangle1.setMaterialDiffuse(new RGB(0, 0, 1));
 			sceneTriangle1.setPhongConstant(32);
 
 			Triangle sceneTriangle2 = new Triangle(new Vector3D(-.2, .1, .1), new Vector3D(-.2, -.5, .2),
 					new Vector3D(-.2, .1, -.3), yellow);
 			sceneTriangle2.setSpecularHighlight(new RGB(1, 1, 1));
-			sceneTriangle2.setMaterialDiffuse(new RGB(1, 1, 0));
 			sceneTriangle2.setPhongConstant(4);
 
 			sceneObjects.add(sceneSphere1);
@@ -146,10 +141,10 @@ public class Main {
 					Vector3D intersectionPosition = new Vector3D(
 							cameraRayOrigin.add(cameraRayDirection.multiply(intersections.get(indexOfWinningObject))));
 					Vector3D intersectingRayDirection = new Vector3D(cameraRayDirection);
-					// index coresponds to an object in our scene
+					// index corresponds to an object in our scene
 					Color intersectionColor = PublicUtilities.getPixel(intersectionPosition, intersectingRayDirection,
 							(ArrayList<Object>) sceneObjects, indexOfWinningObject, lightSource, ambientLight,
-							new Vector3D(cameraRayOrigin));
+							intersectingRayDirection.negative());
 					pixel = new RGB(intersectionColor.red, intersectionColor.green, intersectionColor.blue);
 				}
 				image.buffer.setRGB(x, y, pixel.toInteger());
