@@ -28,6 +28,10 @@ public class Color {
 		this.blue = temp;
 	}
 
+	public Color multiply(RGB temp) {
+		return new Color(temp).multiply(this);
+	}
+
 	public double brightness() {
 		return (red + green + blue) / 3;
 	}

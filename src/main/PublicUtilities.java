@@ -63,12 +63,16 @@ public class PublicUtilities {
 			Vector3D e) {
 		Object winningObject = sceneObjects.get(indexOfWinningObject);
 		Color finalColor = null;
-
-		finalColor = privateUtilities.checkShadows(winningObject.getColor(), winningObject, intersectionPosition,
-				lightSource, sceneObjects, indexOfWinningObject);
-		if (!finalColor.equals(Main.black))
-			finalColor = privateUtilities.color(winningObject.getColor(), winningObject, intersectionPosition,
+		if (winningObject.getColor() != null)
+			finalColor = privateUtilities.checkShadows(winningObject.getColor(), winningObject, intersectionPosition,
+					lightSource, sceneObjects, indexOfWinningObject);
+		if (finalColor != null && !finalColor.equals(Main.black) && winningObject.getSpecularHighlight() != null)
+			finalColor = privateUtilities.specular(winningObject.getColor(), winningObject, intersectionPosition,
 					lightSource, ambientLight, e);
+		if (winningObject.getReflective() != null) {
+			finalColor = privateUtilities.reflective(new Color(1, 1, 1), winningObject, intersectionPosition,
+					lightSource, ambientLight, e, intersectionRayDirection, sceneObjects);
+		}
 		finalColor = finalColor.clip();
 		return finalColor;
 	}

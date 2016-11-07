@@ -15,8 +15,8 @@ public class Main {
 	static final Color green = new Color(0, 1, 0);
 	static final Color yellow = new Color(1, 1, 0);
 	static final Color red = new Color(1, 0, 0);
-	static final int width = 514;
-	static final int height = 513;
+	static final int width = 515;
+	static final int height = 516;
 	static final String imageName = "scene.png";
 
 	public static void main(String[] args) {
@@ -31,7 +31,7 @@ public class Main {
 		List<Object> sceneObjects = new ArrayList<>();
 
 		Vector3D Y = new Vector3D(0, -1, 0);
-		String type = "diffuse";
+		String type = "scenell";
 		Light lightSource = null;
 		RGB backgroundColor = new RGB(0.2, 0.2, 0.2);
 
@@ -71,17 +71,24 @@ public class Main {
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
 		} else if (type.equals("scenell")) {
-			ambientLight = .1;
+			ambientLight = 0;
 			cameraPosition = new Vector3D(0, 0, 1.2);
 			lookAt = new Vector3D(0, 0, 0);
 
 			Vector3D lightPosition = new Vector3D(0, 1, 0);
 			lightSource = new Light(lightPosition, white);
-			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2, white);
+			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2);
+			sceneSphere1.setReflective(new RGB(.75, .75, .75));
 			Triangle sceneTriangle1 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(1, .5, 0),
 					new Vector3D(0, -.5, -.5), blue);
+			sceneTriangle1.setSpecularHighlight(new RGB(1, 1, 1));
+			sceneTriangle1.setPhongConstant(4);
+
 			Triangle sceneTriangle2 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(0, -.5, -.5),
 					new Vector3D(-1, .5, 0), yellow);
+			sceneTriangle2.setSpecularHighlight(new RGB(1, 1, 1));
+			sceneTriangle2.setPhongConstant(4);
+
 			sceneObjects.add(sceneSphere1);
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);

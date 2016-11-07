@@ -31,9 +31,15 @@ public class Sphere extends Object {
 		this.color = new Color(color);
 	}
 
+	public Sphere(Vector3D center, double radius) {
+		this.center = new Vector3D(center);
+		this.radius = radius;
+
+	}
+
 	@Override
 	public Color getColor() {
-		return new Color(color);
+		return color;
 	}
 
 	@Override

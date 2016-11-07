@@ -3,6 +3,15 @@ package main;
 public abstract class Object {
 	private RGB specularHighlight;
 	private int phongConstant;
+	private RGB reflective;
+
+	public RGB getReflective() {
+		return reflective;
+	}
+
+	public void setReflective(RGB reflective) {
+		this.reflective = reflective;
+	}
 
 	public int getPhongConstant() {
 		return phongConstant;
@@ -13,9 +22,6 @@ public abstract class Object {
 	}
 
 	public RGB getSpecularHighlight() {
-		if (specularHighlight == null) {
-			System.out.println("specularHighlight is null!!!!");
-		}
 		return specularHighlight;
 	}
 
