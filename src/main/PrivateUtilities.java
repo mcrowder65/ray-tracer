@@ -40,8 +40,7 @@ public class PrivateUtilities {
 				lightSource.getPosition().add(intersectionPosition.negative()).normalize());
 		float distanceToLightMagnitude = (float) distanceToLight.magnitude();
 
-		Ray shadowRay = new Ray(intersectionPosition,
-				lightSource.getPosition().add(intersectionPosition.negative()).normalize());
+		Ray shadowRay = new Ray(intersectionPosition, lightSource.getPosition());
 
 		List<Double> secondaryIntersections = new ArrayList<>();
 		for (int objectIndex = 0; objectIndex < sceneObjects.size(); objectIndex++) {
