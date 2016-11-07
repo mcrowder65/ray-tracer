@@ -15,8 +15,8 @@ public class Main {
 	static final Color green = new Color(0, 1, 0);
 	static final Color yellow = new Color(1, 1, 0);
 	static final Color red = new Color(1, 0, 0);
-	static final int width = 640;
-	static final int height = 480;
+	static final int width = 514;
+	static final int height = 513;
 	static final String imageName = "scene.png";
 
 	public static void main(String[] args) {
@@ -86,21 +86,6 @@ public class Main {
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
 
-		} else if (type.equals("tutorial")) {
-			Y = new Vector3D(0, 1, 0);
-			ambientLight = .2;
-			cameraPosition = new Vector3D(3, 1.5, -4);
-			lookAt = new Vector3D(0, 0, 0);
-			Vector3D lightPosition = new Vector3D(-7, 10, -10);
-			lightSource = new Light(lightPosition, white);
-			Sphere sceneSphere1 = new Sphere(new Vector3D(0, 0, 0), 1, green);
-			Triangle sceneTriangle1 = new Triangle(new Vector3D(3, 0, 0), new Vector3D(0, 3, 0), new Vector3D(0, 0, 3),
-					blue);
-			Triangle sceneTriangle2 = new Triangle(new Vector3D(-2, 0, 0), new Vector3D(-5, 3, 0),
-					new Vector3D(-5, 0, 3), blue);
-			sceneObjects.add(sceneSphere1);
-			sceneObjects.add(sceneTriangle1);
-			sceneObjects.add(sceneTriangle2);
 		}
 		double aspectratio = (double) width / (double) height;
 
@@ -112,7 +97,6 @@ public class Main {
 		Vector3D cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
 		Camera sceneCamera = new Camera(cameraPosition, cameraDirection, cameraRight, cameraDown);
 		double xAmount, yAmount;
-
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 
@@ -121,7 +105,6 @@ public class Main {
 				Vector3D cameraRayOrigin = sceneCamera.getPosition();
 				Vector3D cameraRayDirection = cameraDirection
 						.add(cameraRight.multiply(xAmount - 0.5).add(cameraDown.multiply(yAmount - 0.5))).normalize();
-
 				Ray cameraRay = new Ray(cameraRayOrigin, cameraRayDirection);
 				List<Double> intersections = new ArrayList<>();
 
