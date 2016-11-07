@@ -59,17 +59,15 @@ public class PublicUtilities {
 	}
 
 	static Color getPixel(Vector3D intersectionPosition, Vector3D intersectionRayDirection,
-			ArrayList<Object> sceneObjects, int indexOfWinningObject, Light lightSource, double ambientLight) {
-		// phong
-		// r = 2n (n dot l) - l
-		// cl dot cp max(0, edotr) ^ p
+			ArrayList<Object> sceneObjects, int indexOfWinningObject, Light lightSource, double ambientLight,
+			Vector3D e) {
 		Object winningObject = sceneObjects.get(indexOfWinningObject);
 		Color finalColor = new Color(winningObject.getColor());
 
 		finalColor = privateUtilities.checkShadows(finalColor, winningObject, intersectionPosition, lightSource,
 				sceneObjects, indexOfWinningObject);
-		finalColor = privateUtilities.specularHighlight(finalColor, winningObject, intersectionPosition,
-				intersectionRayDirection, lightSource, sceneObjects, indexOfWinningObject);
+		finalColor = privateUtilities.color(finalColor, winningObject, intersectionPosition, lightSource, ambientLight,
+				e);
 		finalColor = finalColor.clip();
 		return finalColor;
 	}

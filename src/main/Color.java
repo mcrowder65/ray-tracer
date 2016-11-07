@@ -16,11 +16,23 @@ public class Color {
 		this.blue = color.blue;
 	}
 
+	public Color(RGB temp) {
+		this.red = temp.r;
+		this.green = temp.g;
+		this.blue = temp.b;
+	}
+
+	public Color(double temp) {
+		this.red = temp;
+		this.green = temp;
+		this.blue = temp;
+	}
+
 	public double brightness() {
 		return (red + green + blue) / 3;
 	}
 
-	Color scale(double scalar) {
+	Color multiply(double scalar) {
 		return new Color(red * scalar, green * scalar, blue * scalar);
 	}
 

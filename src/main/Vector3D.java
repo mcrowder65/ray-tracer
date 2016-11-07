@@ -35,6 +35,24 @@ public class Vector3D {
 
 	public double x, y, z;
 
+	public Vector3D(int temp) {
+		this.x = temp;
+		this.y = temp;
+		this.z = temp;
+	}
+
+	public Vector3D(double temp) {
+		this.x = temp;
+		this.y = temp;
+		this.z = temp;
+	}
+
+	public Vector3D(Color color) {
+		this.x = color.red;
+		this.y = color.green;
+		this.z = color.blue;
+	}
+
 	public Vector3D() {
 		x = 0.0;
 		y = 0.0;
@@ -45,6 +63,12 @@ public class Vector3D {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+	public Vector3D(RGB temp) {
+		this.x = temp.r;
+		this.y = temp.g;
+		this.z = temp.b;
 	}
 
 	@Override
