@@ -36,7 +36,7 @@ public class Main {
 		RGB backgroundColor = new RGB(0.2, 0.2, 0.2);
 
 		if (type.equals("diffuse")) {
-			ambientLight = .2;
+			ambientLight = .1;
 			cameraPosition = new Vector3D(0, 0, 1);
 			lookAt = new Vector3D(0, 0, 0);
 
@@ -148,7 +148,8 @@ public class Main {
 					Vector3D intersectingRayDirection = new Vector3D(cameraRayDirection);
 					// index coresponds to an object in our scene
 					Color intersectionColor = PublicUtilities.getPixel(intersectionPosition, intersectingRayDirection,
-							(ArrayList<Object>) sceneObjects, indexOfWinningObject, lightSource, ambientLight, lookAt);
+							(ArrayList<Object>) sceneObjects, indexOfWinningObject, lightSource, ambientLight,
+							new Vector3D(cameraRayOrigin));
 					pixel = new RGB(intersectionColor.red, intersectionColor.green, intersectionColor.blue);
 				}
 				image.buffer.setRGB(x, y, pixel.toInteger());

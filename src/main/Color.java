@@ -32,7 +32,7 @@ public class Color {
 		return (red + green + blue) / 3;
 	}
 
-	Color multiply(double scalar) {
+	public Color multiply(double scalar) {
 		return new Color(red * scalar, green * scalar, blue * scalar);
 	}
 

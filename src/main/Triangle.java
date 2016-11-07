@@ -13,12 +13,19 @@ public class Triangle extends Object {
 
 	@Override
 	public Color getColor() {
-		return color;
+		return new Color(color);
 	}
 
 	@Override
 	public Vector3D getNormalAt(Vector3D point) {
 		return getTriangleNormal();
+	}
+
+	private Vector3D getTriangleNormal() {
+		Vector3D CA = new Vector3D(C.x - A.x, C.y - A.y, C.z - A.z);
+		Vector3D BA = new Vector3D(B.x - A.x, B.y - A.y, B.z - A.z);
+		Vector3D normal = CA.cross(BA).normalize();
+		return new Vector3D(normal);
 	}
 
 	@Override
@@ -62,13 +69,6 @@ public class Triangle extends Object {
 		} else if (!color.equals(other.color))
 			return false;
 		return true;
-	}
-
-	private Vector3D getTriangleNormal() {
-		Vector3D CA = new Vector3D(C.x - A.x, C.y - A.y, C.z - A.z);
-		Vector3D BA = new Vector3D(B.x - A.x, B.y - A.y, B.z - A.z);
-		Vector3D normal = CA.cross(BA).normalize();
-		return new Vector3D(normal);
 	}
 
 	public double getTriangleDistance() {

@@ -9,32 +9,35 @@ public class PrivateUtilities {
 
 	public Color color(Color finalColor, Object winningObject, Vector3D intersectionPosition, Light lightSource,
 			double ambientLight, Vector3D eye) {
-		if (finalColor.equals(Main.black)) {
-			return new Color(finalColor);
-		}
-		Vector3D n = winningObject.getNormalAt(intersectionPosition); // TODO is
-																		// this
-																		// right?
+
+		Vector3D n = winningObject.getNormalAt(intersectionPosition);
 		Color Cr = new Color(winningObject.getMaterialDiffuse());
 		Color Ca = new Color(ambientLight);
 		Color Cl = new Color(lightSource.getColor());
+
 		Vector3D l = new Vector3D(lightSource.getPosition());
 		final int p = winningObject.getPhongConstant();
-		Color Cp = new Color(p);
+		Color Cp = new Color(winningObject.getSpecularHighlight());
 		Vector3D e = new Vector3D(eye);
 		// r = 2n(n dot l) - l
+
 		Vector3D r = new Vector3D(n.multiply(2).multiply(n.dot(l)).sub(l));
 
 		// color = Cr (Ca + Cl Max(0, n dot l)) + ClCp max(0, e dot r) ^ p
 		// Cr(Ca + Cl max (0, n dot l))
-		Color first = Cr.multiply(Ca.add(Cl.multiply(Math.max(0, n.dot(l)))));
-		Color second = Cl.multiply(Cp.multiply(Math.pow(Math.max(0, e.dot(r)), p)));
-		return new Color(first.add(second));
+		Color kd = new Color(0);
+		Color diffuse = Cr.multiply((Cl.multiply(Math.max(0, n.dot(l)))));
+		Color specular = Cl.multiply(Cp).multiply(Math.pow(Math.max(0, e.dot(r)), p));
+		Color color = new Color(diffuse.add(specular));
+		Color ambient = Ca.multiply(winningObject.getColor()).multiply(lightSource.getColor());
+		return new Color(color.add(ambient));
+
 	}
 
 	public Color checkShadows(Color finalColor, Object winningObject, Vector3D intersectionPosition, Light lightSource,
 			ArrayList<Object> sceneObjects, int indexOfWinningObject) {
-		Vector3D distanceToLight = lightSource.getPosition().add(intersectionPosition.negative()).normalize();
+		Vector3D distanceToLight = new Vector3D(
+				lightSource.getPosition().add(intersectionPosition.negative()).normalize());
 		float distanceToLightMagnitude = (float) distanceToLight.magnitude();
 
 		Ray shadowRay = new Ray(intersectionPosition,

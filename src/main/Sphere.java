@@ -33,7 +33,7 @@ public class Sphere extends Object {
 
 	@Override
 	public Color getColor() {
-		return color;
+		return new Color(color);
 	}
 
 	@Override

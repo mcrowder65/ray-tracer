@@ -66,8 +66,9 @@ public class PublicUtilities {
 
 		finalColor = privateUtilities.checkShadows(finalColor, winningObject, intersectionPosition, lightSource,
 				sceneObjects, indexOfWinningObject);
-		finalColor = privateUtilities.color(finalColor, winningObject, intersectionPosition, lightSource, ambientLight,
-				e);
+		if (!finalColor.equals(Main.black))
+			finalColor = privateUtilities.color(finalColor, winningObject, intersectionPosition, lightSource,
+					ambientLight, e);
 		finalColor = finalColor.clip();
 		return finalColor;
 	}
