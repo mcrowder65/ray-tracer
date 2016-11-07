@@ -24,8 +24,8 @@ public class Triangle extends Object {
 	private Vector3D getTriangleNormal() {
 		Vector3D CA = new Vector3D(C.x - A.x, C.y - A.y, C.z - A.z);
 		Vector3D BA = new Vector3D(B.x - A.x, B.y - A.y, B.z - A.z);
-		Vector3D normal = CA.cross(BA).normalize();
-		return new Vector3D(normal);
+		Vector3D normal = BA.cross(CA).normalize();
+		return new Vector3D(normal.negative());
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class Triangle extends Object {
 
 	public double getTriangleDistance() {
 		Vector3D normal = getTriangleNormal();
-		double distance = normal.dot(B);
+		double distance = normal.dot(C);
 		return distance;
 	}
 

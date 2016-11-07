@@ -2,7 +2,6 @@ package main;
 
 public abstract class Object {
 	private RGB specularHighlight;
-	private RGB materialDiffuse;
 	private int phongConstant;
 
 	public int getPhongConstant() {

@@ -118,7 +118,6 @@ public class Main {
 
 				xAmount = ((x + 0.5) / width) * aspectratio - (((width - height) / (double) height) / 2);
 				yAmount = ((height - y) + 0.5) / height;
-
 				Vector3D cameraRayOrigin = sceneCamera.getPosition();
 				Vector3D cameraRayDirection = cameraDirection
 						.add(cameraRight.multiply(xAmount - 0.5).add(cameraDown.multiply(yAmount - 0.5))).normalize();

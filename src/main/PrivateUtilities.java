@@ -10,23 +10,27 @@ public class PrivateUtilities {
 	public Color color(Color finalColor, Object winningObject, Vector3D intersectionPosition, Light lightSource,
 			double ambientLight, Vector3D eye) {
 
-		Vector3D n = winningObject.getNormalAt(intersectionPosition);
-		Color Ca = new Color(ambientLight);
-		Color Cl = new Color(lightSource.getColor());
+		final Vector3D n = winningObject.getNormalAt(intersectionPosition);
+		final Color Ca = new Color(ambientLight);
+		final Color Cl = Main.white;
 
-		Vector3D l = new Vector3D(lightSource.getPosition());
+		final Vector3D l = new Vector3D(lightSource.getPosition());
 		final int p = winningObject.getPhongConstant();
-		Color Cp = new Color(winningObject.getSpecularHighlight());
-		Vector3D e = new Vector3D(eye);
+		final Color Cp = new Color(winningObject.getSpecularHighlight());
+		final Vector3D e = new Vector3D(eye);
 		// r = 2n(n dot l) - l
 
 		// color = Cr (Ca + Cl Max(0, n dot l)) + ClCp max(0, e dot r) ^ p
-		// Cr(Ca + Cl max (0, n dot l))
-		Color diffuse = finalColor.multiply(Ca.add(Cl.multiply(Math.max(0, n.dot(l)))));
-		Vector3D r = new Vector3D(n.multiply(2).multiply(n.dot(l)).sub(l));
-		Color specular = Cl.multiply(Cp).multiply(Math.pow(Math.max(0, e.dot(r)), p));
-		Color surfaceColor = diffuse.add(specular);
-		return surfaceColor;
+		final Color diffuse = finalColor
+				.multiply(Cl.multiply(Math.max(0, n.dot(winningObject instanceof Triangle ? l.negative() : l))));
+		Color specular = new Color(0);
+		// if (!diffuse.equals(specular)) {
+		final Vector3D r = new Vector3D(n.multiply(2).multiply(n.dot(l)).sub(l));
+		specular = Cl.multiply(Cp).multiply(Math.pow(Math.max(0, e.dot(r)), p));
+		// }
+		final Color ambient = Ca.multiply(winningObject.getColor()).multiply(Cl);
+		final Color surfaceColor = diffuse.add(specular);
+		return surfaceColor.add(ambient);
 
 	}
 
