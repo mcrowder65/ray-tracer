@@ -64,7 +64,7 @@ public class PrivateUtilities {
 	}
 
 	public Color reflective(Object winningObject, Vector3D intersectionPosition, Vector3D intersectingRayDirection,
-			ArrayList<Object> objects) {
+			ArrayList<Object> objects, Light lightSource) {
 		Vector3D winningObjectNormal = winningObject.getNormalAt(intersectionPosition);
 		float accuracy = (float) 0.0000001;
 		double dot1 = winningObjectNormal.dot(intersectingRayDirection.negative());
@@ -91,27 +91,35 @@ public class PrivateUtilities {
 				// intersection with the reflection ray
 				// the ray only affects the color if it reflected off something
 				Object obj = objects.get(indexOfWinningObjectWithReflection);
+
 				Vector3D reflectionIntersectionPosition = intersectionPosition.add(
 						reflectionDirection.multiply(reflectionIntersections.get(indexOfWinningObjectWithReflection)));
 				Vector3D reflectionIntersectionRayDirection = reflectionDirection;
-				// recursive call explained at 30:00 in episode 8
+
+				// check to see if there should be a shadow
+				Color shadowColor = checkShadows(obj.getColor(), obj, reflectionIntersectionPosition, lightSource,
+						objects, indexOfWinningObjectWithReflection);
+				if (shadowColor != null && shadowColor.equals(Main.black)) {
+					return Main.black;
+				}
 				Color reflectionIntersectionColor = reflective(obj, reflectionIntersectionPosition,
-						reflectionIntersectionRayDirection, objects);
+						reflectionIntersectionRayDirection, objects, lightSource);
 				if (reflectionIntersectionColor != null) {
 					if (obj.getColor() != null) {
-						finalColor = obj.getColor()
-								.add(reflectionIntersectionColor.multiply(winningObject.getReflective()));
+						finalColor = obj.getColor();
 					} else {
-						// Takes care of the spots on the side
+						// Takes care of the circles on the side
 						finalColor = reflectionIntersectionColor.multiply(winningObject.getReflective());
 					}
+
 				}
 			} else {
+				// takes care of specs on the triangle reflections
 				finalColor = winningObject.getColor();
 			}
 		} else {
 			// takes care of the surrounding color of the sphere
-			finalColor = new Color(0.2, 0.2, 0.2).multiply(winningObject.getReflective());
+			finalColor = Main.backgroundColor.multiply(winningObject.getReflective());
 		}
 
 		return finalColor;

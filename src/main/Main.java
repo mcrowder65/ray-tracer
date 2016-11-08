@@ -15,10 +15,10 @@ public class Main {
 	static final int width = 515;
 	static final int height = 516;
 	static final String imageName = "scene.png";
+	static final Color backgroundColor = new Color(0.2, 0.2, 0.2);
 
 	public static void main(String[] args) {
 		// TODO figure out FOV
-		// TODO reflection
 		// TODO figure out if egbert thinks my diffuse are close enough
 		PublicUtilities.exec("rm " + imageName);
 		PublicUtilities.exec("pkill Preview");
@@ -32,7 +32,6 @@ public class Main {
 		Vector3D Y = new Vector3D(0, -1, 0);
 		String type = "scenell";
 		Light lightSource = null;
-		RGB backgroundColor = new RGB(0.2, 0.2, 0.2);
 
 		if (type.equals("diffuse")) {
 			ambientLight = .1;
@@ -122,7 +121,7 @@ public class Main {
 				// no intersection, set to background color.
 				RGB pixel = null;
 				if (indexOfWinningObject == -1) {
-					pixel = new RGB(backgroundColor.r, backgroundColor.g, backgroundColor.b);
+					pixel = new RGB(backgroundColor);
 				} else {
 					// determines the position and direction vectors at the
 					// point of intersection
@@ -141,6 +140,7 @@ public class Main {
 				image.buffer.setRGB(x, y, pixel.toInteger());
 			}
 		}
+
 		image.write("PNG");
 		PublicUtilities.exec("open " + imageName);
 		if (!type.equals("tutorial")) {

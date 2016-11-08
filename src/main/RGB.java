@@ -16,6 +16,12 @@ public class RGB {
 		this.b = b;
 	}
 
+	RGB(Color color) {
+		this.r = color.red;
+		this.g = color.green;
+		this.b = color.blue;
+	}
+
 	public int toInteger() {
 		return (int) (r * 255) << 16 | (int) (g * 255) << 8 | (int) (b * 255);
 	}
