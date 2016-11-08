@@ -63,8 +63,8 @@ public class PrivateUtilities {
 		return new Color(finalColor);
 	}
 
-	public Color reflective(Object winningObject, Vector3D intersectionPosition, Vector3D intersectingRayDirection,
-			ArrayList<Object> objects, Light lightSource) {
+	public Color reflectiveAndTranslucent(Object winningObject, Vector3D intersectionPosition,
+			Vector3D intersectingRayDirection, ArrayList<Object> objects, Light lightSource) {
 		Vector3D winningObjectNormal = winningObject.getNormalAt(intersectionPosition);
 		float accuracy = (float) 0.0000001;
 		double dot1 = winningObjectNormal.dot(intersectingRayDirection.negative());
@@ -102,7 +102,7 @@ public class PrivateUtilities {
 				if (shadowColor != null && shadowColor.equals(Main.black)) {
 					return Main.black;
 				}
-				Color reflectionIntersectionColor = reflective(obj, reflectionIntersectionPosition,
+				Color reflectionIntersectionColor = reflectiveAndTranslucent(obj, reflectionIntersectionPosition,
 						reflectionIntersectionRayDirection, objects, lightSource);
 				if (reflectionIntersectionColor != null) {
 					if (obj.getColor() != null) {
@@ -124,10 +124,6 @@ public class PrivateUtilities {
 
 		return finalColor;
 
-	}
-
-	public Color translucent(Color finalColor) {
-		return finalColor;
 	}
 
 }

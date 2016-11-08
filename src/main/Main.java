@@ -30,7 +30,7 @@ public class Main {
 		Vector3D lookUp = null;
 		List<Object> sceneObjects = new ArrayList<>();
 
-		String type = "scenell";
+		String type = "diffuse";
 		Light lightSource = null;
 		Vector3D cameraDirection = null;
 		Vector3D cameraRight = null;

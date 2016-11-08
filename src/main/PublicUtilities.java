@@ -69,11 +69,9 @@ public class PublicUtilities {
 			if (!finalColor.equals(Main.black))
 				finalColor = privateUtilities.specular(winningObject.getColor(), winningObject, intersectionPosition,
 						lightSource, ambientLight, e);
-		} else if (winningObject.getReflective() != null) {
-			finalColor = privateUtilities.reflective(winningObject, intersectionPosition, intersectionRayDirection,
-					sceneObjects, lightSource);
-		} else if (winningObject.getTranslucent() != null) {
-			finalColor = privateUtilities.translucent(winningObject.getColor());
+		} else if (winningObject.getReflective() != null || winningObject.getTranslucent() != null) {
+			finalColor = privateUtilities.reflectiveAndTranslucent(winningObject, intersectionPosition,
+					intersectionRayDirection, sceneObjects, lightSource);
 		}
 
 		return finalColor != null ? finalColor.clip() : finalColor;
