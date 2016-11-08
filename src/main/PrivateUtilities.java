@@ -63,8 +63,8 @@ public class PrivateUtilities {
 		return new Color(finalColor);
 	}
 
-	public Color reflective(Color finalColor, Object winningObject, Vector3D intersectionPosition,
-			Vector3D intersectingRayDirection, ArrayList<Object> objects) {
+	public Color reflective(Object winningObject, Vector3D intersectionPosition, Vector3D intersectingRayDirection,
+			ArrayList<Object> objects) {
 		Vector3D winningObjectNormal = winningObject.getNormalAt(intersectionPosition);
 		float accuracy = (float) 0.0000001;
 		double dot1 = winningObjectNormal.dot(intersectingRayDirection.negative());
@@ -83,28 +83,34 @@ public class PrivateUtilities {
 		}
 		int indexOfWinningObjectWithReflection = PublicUtilities
 				.winningObjectIndex((ArrayList<Double>) reflectionIntersections);
-
+		Color finalColor = null;
 		if (indexOfWinningObjectWithReflection != -1) {
 			// reflection ray missed everything else
 			if (reflectionIntersections.get(indexOfWinningObjectWithReflection) > accuracy) {
 				// determine the position and direction at the point of
 				// intersection with the reflection ray
 				// the ray only affects the color if it reflected off something
+				Object obj = objects.get(indexOfWinningObjectWithReflection);
 				Vector3D reflectionIntersectionPosition = intersectionPosition.add(
 						reflectionDirection.multiply(reflectionIntersections.get(indexOfWinningObjectWithReflection)));
 				Vector3D reflectionIntersectionRayDirection = reflectionDirection;
 				// recursive call explained at 30:00 in episode 8
-				Color reflectionIntersectionColor = reflective(
-						objects.get(indexOfWinningObjectWithReflection).getColor(),
-						objects.get(indexOfWinningObjectWithReflection), reflectionIntersectionPosition,
+				Color reflectionIntersectionColor = reflective(obj, reflectionIntersectionPosition,
 						reflectionIntersectionRayDirection, objects);
 				if (reflectionIntersectionColor != null) {
-					finalColor = new Color(reflectionIntersectionColor.multiply(winningObject.getReflective()));
-				} else {
-					finalColor = null;
+					if (obj.getColor() != null) {
+						finalColor = obj.getColor()
+								.add(reflectionIntersectionColor.multiply(winningObject.getReflective()));
+					} else {
+						// Takes care of the spots on the side
+						finalColor = reflectionIntersectionColor.multiply(winningObject.getReflective());
+					}
 				}
+			} else {
+				finalColor = winningObject.getColor();
 			}
 		} else {
+			// takes care of the surrounding color of the sphere
 			finalColor = new Color(0.2, 0.2, 0.2).multiply(winningObject.getReflective());
 		}
 

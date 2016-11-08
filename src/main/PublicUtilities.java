@@ -71,8 +71,8 @@ public class PublicUtilities {
 				finalColor = privateUtilities.specular(winningObject.getColor(), winningObject, intersectionPosition,
 						lightSource, ambientLight, e);
 		} else if (winningObject.getReflective() != null) {
-			finalColor = privateUtilities.reflective(winningObject.getColor(), winningObject, intersectionPosition,
-					intersectionRayDirection, sceneObjects);
+			finalColor = privateUtilities.reflective(winningObject, intersectionPosition, intersectionRayDirection,
+					sceneObjects);
 		}
 
 		return finalColor != null ? finalColor.clip() : finalColor;
