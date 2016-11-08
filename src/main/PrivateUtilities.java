@@ -66,64 +66,66 @@ public class PrivateUtilities {
 	public Color reflectiveAndTranslucent(Object winningObject, Vector3D intersectionPosition,
 			Vector3D intersectingRayDirection, ArrayList<Object> objects, Light lightSource) {
 		Vector3D winningObjectNormal = winningObject.getNormalAt(intersectionPosition);
-		float accuracy = (float) 0.0000001;
-		double dot1 = winningObjectNormal.dot(intersectingRayDirection.negative());
-		Vector3D scalar1 = winningObjectNormal.multiply(dot1);
-		Vector3D add1 = scalar1.add(intersectingRayDirection);
-		Vector3D scalar2 = add1.multiply(2);
-		Vector3D add2 = intersectingRayDirection.negative().add(scalar2);
-		Vector3D reflectionDirection = add2.normalize();
+		if (winningObject.getReflective() != null) {
+			float accuracy = (float) 0.0000001;
+			double dot1 = winningObjectNormal.dot(intersectingRayDirection.negative());
+			Vector3D scalar1 = winningObjectNormal.multiply(dot1);
+			Vector3D add1 = scalar1.add(intersectingRayDirection);
+			Vector3D scalar2 = add1.multiply(2);
+			Vector3D add2 = intersectingRayDirection.negative().add(scalar2);
+			Vector3D reflectionDirection = add2.normalize();
 
-		Ray reflectionRay = new Ray(intersectionPosition, reflectionDirection);
+			Ray reflectionRay = new Ray(intersectionPosition, reflectionDirection);
 
-		// determine what the ray intersects with first
-		List<Double> reflectionIntersections = new ArrayList<>();
-		for (int reflectionIndex = 0; reflectionIndex < objects.size(); reflectionIndex++) {
-			reflectionIntersections.add(objects.get(reflectionIndex).findIntersection(reflectionRay));
-		}
-		int indexOfWinningObjectWithReflection = PublicUtilities
-				.winningObjectIndex((ArrayList<Double>) reflectionIntersections);
-		Color finalColor = null;
-		if (indexOfWinningObjectWithReflection != -1) {
-			// reflection ray missed everything else
-			if (reflectionIntersections.get(indexOfWinningObjectWithReflection) > accuracy) {
-				// determine the position and direction at the point of
-				// intersection with the reflection ray
-				// the ray only affects the color if it reflected off something
-				Object obj = objects.get(indexOfWinningObjectWithReflection);
+			// determine what the ray intersects with first
+			List<Double> reflectionIntersections = new ArrayList<>();
+			for (int reflectionIndex = 0; reflectionIndex < objects.size(); reflectionIndex++) {
+				reflectionIntersections.add(objects.get(reflectionIndex).findIntersection(reflectionRay));
+			}
+			int indexOfWinningObjectWithReflection = PublicUtilities
+					.winningObjectIndex((ArrayList<Double>) reflectionIntersections);
+			Color finalColor = null;
+			if (indexOfWinningObjectWithReflection != -1) {
+				// reflection ray missed everything else
+				if (reflectionIntersections.get(indexOfWinningObjectWithReflection) > accuracy) {
+					// determine the position and direction at the point of
+					// intersection with the reflection ray
+					// the ray only affects the color if it reflected off
+					// something
+					Object obj = objects.get(indexOfWinningObjectWithReflection);
 
-				Vector3D reflectionIntersectionPosition = intersectionPosition.add(
-						reflectionDirection.multiply(reflectionIntersections.get(indexOfWinningObjectWithReflection)));
-				Vector3D reflectionIntersectionRayDirection = reflectionDirection;
+					Vector3D reflectionIntersectionPosition = intersectionPosition.add(reflectionDirection
+							.multiply(reflectionIntersections.get(indexOfWinningObjectWithReflection)));
+					Vector3D reflectionIntersectionRayDirection = reflectionDirection;
 
-				// check to see if there should be a shadow
-				Color shadowColor = checkShadows(obj.getColor(), obj, reflectionIntersectionPosition, lightSource,
-						objects, indexOfWinningObjectWithReflection);
-				if (shadowColor != null && shadowColor.equals(Main.black)) {
-					return Main.black;
-				}
-				Color reflectionIntersectionColor = reflectiveAndTranslucent(obj, reflectionIntersectionPosition,
-						reflectionIntersectionRayDirection, objects, lightSource);
-				if (reflectionIntersectionColor != null) {
-					if (obj.getColor() != null) {
-						finalColor = obj.getColor();
-					} else {
-						// Takes care of the circles on the side
-						finalColor = reflectionIntersectionColor.multiply(winningObject.getReflective());
+					// check to see if there should be a shadow
+					Color shadowColor = checkShadows(obj.getColor(), obj, reflectionIntersectionPosition, lightSource,
+							objects, indexOfWinningObjectWithReflection);
+					if (shadowColor != null && shadowColor.equals(Main.black)) {
+						return Main.black;
 					}
+					Color reflectionIntersectionColor = reflectiveAndTranslucent(obj, reflectionIntersectionPosition,
+							reflectionIntersectionRayDirection, objects, lightSource);
+					if (reflectionIntersectionColor != null) {
+						if (obj.getColor() != null) {
+							finalColor = obj.getColor();
+						} else {
+							// Takes care of the circles on the side
+							finalColor = reflectionIntersectionColor.multiply(winningObject.getReflective());
+						}
 
+					}
+				} else {
+					// takes care of specs on the triangle reflections
+					finalColor = winningObject.getColor();
 				}
 			} else {
-				// takes care of specs on the triangle reflections
-				finalColor = winningObject.getColor();
+				// takes care of the surrounding color of the sphere
+				finalColor = Main.backgroundColor.multiply(winningObject.getReflective());
 			}
-		} else {
-			// takes care of the surrounding color of the sphere
-			finalColor = Main.backgroundColor.multiply(winningObject.getReflective());
+			return finalColor;
 		}
-
-		return finalColor;
-
+		return null;
 	}
 
 }
