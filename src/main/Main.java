@@ -17,15 +17,9 @@ public class Main {
 	static final String imageName = "scene.png";
 	static final Color backgroundColor = new Color(0.2, 0.2, 0.2);
 
-	public void compute_uvw(Vector3D eye, Vector3D lookat, Vector3D up) {
-		Vector3D w = eye.sub(lookat).normalize();
-		Vector3D u = up.cross(w).normalize();
-		Vector3D v = w.cross(u).normalize();
-	}
-
 	public static void main(String[] args) {
 		// TODO figure out FOV
-		// TODO figure out if egbert thinks my diffuse are close enough
+		// TODO figure out if egbert thinks my diffuse is close enough
 		PublicUtilities.exec("rm " + imageName);
 		PublicUtilities.exec("pkill Preview");
 
@@ -45,8 +39,7 @@ public class Main {
 		if (type.equals("diffuse")) {
 			ambientLight = .1;
 			lookUp = new Vector3D(0, 1, 0);
-			FOV = 28;// * Math.PI / 180;
-			System.out.println(FOV);
+			FOV = 28;
 			cameraPosition = new Vector3D(0, 0, 1);
 			lookAt = new Vector3D(0, 0, 0);
 
@@ -87,9 +80,14 @@ public class Main {
 			cameraRight = new Vector3D(lookUp.negative().cross(cameraDirection).normalize());
 
 			cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
+			double fovScale = Math.atan(Math.toRadians(FOV));
+			cameraRight = new Vector3D(fovScale * 2.5, 0, 0);
+			// new
+			// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
 
+			cameraDown = new Vector3D(0, fovScale * 2.5, 0);
 		} else if (type.equals("scenell")) {
-			FOV = 55;// * Math.PI / 180;
+			FOV = 55;
 			lookUp = new Vector3D(0, 1, 0);
 			ambientLight = 0;
 			cameraPosition = new Vector3D(0, 0, 1.2);
@@ -113,15 +111,17 @@ public class Main {
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
 			cameraDirection = new Vector3D(cameraPosition.sub(lookAt).negative().normalize());
+			double fovScale = Math.atan(Math.toRadians(FOV));
+			System.out.println("fovScale: " + fovScale);
+			cameraRight = new Vector3D(fovScale * 4, 0, 0);
+			// new
+			// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
 
-			cameraRight = new Vector3D(3, 0, 0);// new
-												// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
-
-			cameraDown = new Vector3D(0, 4, 0);// new
-												// Vector3D(cameraRight.cross(cameraDirection));
+			cameraDown = new Vector3D(0, fovScale * 5, 0);
+			// new Vector3D(cameraRight.cross(cameraDirection));
 		}
+
 		double aspectratio = (double) width / (double) height;
-		// http://learnopengl.com/#!Getting-started/Camera
 
 		Camera sceneCamera = new Camera(cameraPosition, cameraDirection, cameraRight, cameraDown);
 		System.out.println("pos: " + cameraPosition);
