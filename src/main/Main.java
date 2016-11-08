@@ -17,6 +17,16 @@ public class Main {
 	static final String imageName = "scene.png";
 	static final Color backgroundColor = new Color(0.2, 0.2, 0.2);
 
+	public void compute_uvw() {
+		// w = eye.subVec(lookat);
+		// w.normalize();
+		// Vector3D up = new Vector3D(0.00424, 1.0, 0.00764);
+		// u = up.cross(w);
+		// u.normalize();
+		// v = w.cross(u);
+		// v.normalize();
+	}
+
 	public static void main(String[] args) {
 		// TODO figure out FOV
 		// TODO figure out if egbert thinks my diffuse are close enough
@@ -97,6 +107,7 @@ public class Main {
 
 		}
 		double aspectratio = (double) width / (double) height;
+
 		Vector3D differenceBetween = new Vector3D(cameraPosition.x - lookAt.x, cameraPosition.y - lookAt.y,
 				cameraPosition.z - lookAt.z);
 		Vector3D cameraDirection = new Vector3D(differenceBetween.negative().normalize());
