@@ -5,9 +5,6 @@ import java.util.List;
 
 public class Main {
 
-	// TODO implement phong
-	// TODO implement specular
-	// TODO implement ambient
 	static Image image;
 	static final Color black = new Color(0, 0, 0);
 	static final Color white = new Color(1.0, 1.0, 1.0);
@@ -20,7 +17,9 @@ public class Main {
 	static final String imageName = "scene.png";
 
 	public static void main(String[] args) {
-
+		// TODO figure out FOV
+		// TODO reflection
+		// TODO figure out if egbert thinks my diffuse are close enough
 		PublicUtilities.exec("rm " + imageName);
 		PublicUtilities.exec("pkill Preview");
 
@@ -77,7 +76,7 @@ public class Main {
 
 			Vector3D lightPosition = new Vector3D(0, 1, 0);
 			lightSource = new Light(lightPosition, white);
-			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2);
+			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2, new Color(backgroundColor));
 			sceneSphere1.setReflective(new RGB(.75, .75, .75));
 			Triangle sceneTriangle1 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(1, .5, 0),
 					new Vector3D(0, -.5, -.5), blue);
@@ -134,6 +133,9 @@ public class Main {
 					Color intersectionColor = PublicUtilities.getPixel(intersectionPosition, intersectingRayDirection,
 							(ArrayList<Object>) sceneObjects, indexOfWinningObject, lightSource, ambientLight,
 							intersectingRayDirection.negative());
+					if (intersectionColor == null) {
+						intersectionColor = new Color(backgroundColor);
+					}
 					pixel = new RGB(intersectionColor.red, intersectionColor.green, intersectionColor.blue);
 				}
 				image.buffer.setRGB(x, y, pixel.toInteger());

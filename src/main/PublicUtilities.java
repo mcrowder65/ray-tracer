@@ -66,15 +66,11 @@ public class PublicUtilities {
 		if (winningObject.getColor() != null)
 			finalColor = privateUtilities.checkShadows(winningObject.getColor(), winningObject, intersectionPosition,
 					lightSource, sceneObjects, indexOfWinningObject);
-		if (finalColor != null && !finalColor.equals(Main.black) && winningObject.getSpecularHighlight() != null)
-			finalColor = privateUtilities.specular(winningObject.getColor(), winningObject, intersectionPosition,
-					lightSource, ambientLight, e);
-		if (winningObject.getReflective() != null) {
-			finalColor = privateUtilities.reflective(new Color(1, 1, 1), winningObject, intersectionPosition,
-					lightSource, ambientLight, e, intersectionRayDirection, sceneObjects);
-		}
-		finalColor = finalColor.clip();
-		return finalColor;
+		if (finalColor == null || !finalColor.equals(Main.black))
+			finalColor = privateUtilities.colorThisShiz(winningObject.getColor(), winningObject, intersectionPosition,
+					lightSource, ambientLight, e, intersectionRayDirection, intersectionPosition, sceneObjects, 0);
+
+		return finalColor != null ? finalColor.clip() : finalColor;
 	}
 
 }

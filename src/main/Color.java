@@ -17,9 +17,12 @@ public class Color {
 	}
 
 	public Color(RGB temp) {
-		this.red = temp.r;
-		this.green = temp.g;
-		this.blue = temp.b;
+		if (temp != null) {
+			this.red = temp.r;
+			this.green = temp.g;
+			this.blue = temp.b;
+		}
+
 	}
 
 	public Color(double temp) {
