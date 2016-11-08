@@ -12,8 +12,8 @@ public class Main {
 	static final Color green = new Color(0, 1, 0);
 	static final Color yellow = new Color(1, 1, 0);
 	static final Color red = new Color(1, 0, 0);
-	static final int width = 515;
-	static final int height = 516;
+	static int width = 515;
+	static int height = 516;
 	static final String imageName = "scene.png";
 	static final Color backgroundColor = new Color(0.2, 0.2, 0.2);
 
@@ -32,9 +32,11 @@ public class Main {
 		Vector3D Y = new Vector3D(0, -1, 0);
 		String type = "scenell";
 		Light lightSource = null;
-
+		double FOV = -1;
 		if (type.equals("diffuse")) {
 			ambientLight = .1;
+			FOV = 28;// * Math.PI / 180;
+			System.out.println(FOV);
 			cameraPosition = new Vector3D(0, 0, 1);
 			lookAt = new Vector3D(0, 0, 0);
 
@@ -47,6 +49,7 @@ public class Main {
 
 			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
 			sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
+			// sceneSphere2.setTranslucent(new RGB(.5, .5, .5));
 			sceneSphere2.setPhongConstant(32);
 
 			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3, green);
@@ -69,6 +72,7 @@ public class Main {
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
 		} else if (type.equals("scenell")) {
+			FOV = 55;// * Math.PI / 180;
 			ambientLight = 0;
 			cameraPosition = new Vector3D(0, 0, 1.2);
 			lookAt = new Vector3D(0, 0, 0);
@@ -93,15 +97,14 @@ public class Main {
 
 		}
 		double aspectratio = (double) width / (double) height;
-
 		Vector3D differenceBetween = new Vector3D(cameraPosition.x - lookAt.x, cameraPosition.y - lookAt.y,
 				cameraPosition.z - lookAt.z);
-
 		Vector3D cameraDirection = new Vector3D(differenceBetween.negative().normalize());
 		Vector3D cameraRight = new Vector3D(Y.cross(cameraDirection).normalize());
 		Vector3D cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
 		Camera sceneCamera = new Camera(cameraPosition, cameraDirection, cameraRight, cameraDown);
 		double xAmount, yAmount;
+
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 

@@ -4,6 +4,15 @@ public abstract class Object {
 	private RGB specularHighlight;
 	private int phongConstant;
 	private RGB reflective;
+	private RGB translucent;
+
+	public RGB getTranslucent() {
+		return translucent;
+	}
+
+	public void setTranslucent(RGB translucent) {
+		this.translucent = translucent;
+	}
 
 	public RGB getReflective() {
 		return reflective;

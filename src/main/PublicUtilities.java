@@ -72,6 +72,8 @@ public class PublicUtilities {
 		} else if (winningObject.getReflective() != null) {
 			finalColor = privateUtilities.reflective(winningObject, intersectionPosition, intersectionRayDirection,
 					sceneObjects, lightSource);
+		} else if (winningObject.getTranslucent() != null) {
+			finalColor = privateUtilities.translucent(winningObject.getColor());
 		}
 
 		return finalColor != null ? finalColor.clip() : finalColor;

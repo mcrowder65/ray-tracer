@@ -126,4 +126,8 @@ public class PrivateUtilities {
 
 	}
 
+	public Color translucent(Color finalColor) {
+		return finalColor;
+	}
+
 }
