@@ -76,7 +76,7 @@ public class Main {
 
 			Vector3D lightPosition = new Vector3D(0, 1, 0);
 			lightSource = new Light(lightPosition, white);
-			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2, new Color(backgroundColor));
+			Sphere sceneSphere1 = new Sphere(new Vector3D(0, .3, 0), 0.2);
 			sceneSphere1.setReflective(new RGB(.75, .75, .75));
 			Triangle sceneTriangle1 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(1, .5, 0),
 					new Vector3D(0, -.5, -.5), blue);

@@ -66,9 +66,14 @@ public class PublicUtilities {
 		if (winningObject.getColor() != null)
 			finalColor = privateUtilities.checkShadows(winningObject.getColor(), winningObject, intersectionPosition,
 					lightSource, sceneObjects, indexOfWinningObject);
-		if (finalColor == null || !finalColor.equals(Main.black))
-			finalColor = privateUtilities.colorThisShiz(winningObject.getColor(), winningObject, intersectionPosition,
-					lightSource, ambientLight, e, intersectionRayDirection, intersectionPosition, sceneObjects, 0);
+		if (winningObject.getSpecularHighlight() != null) {
+			if (!finalColor.equals(Main.black))
+				finalColor = privateUtilities.specular(winningObject.getColor(), winningObject, intersectionPosition,
+						lightSource, ambientLight, e);
+		} else if (winningObject.getReflective() != null) {
+			finalColor = privateUtilities.reflective(winningObject.getColor(), winningObject, intersectionPosition,
+					intersectionRayDirection, sceneObjects);
+		}
 
 		return finalColor != null ? finalColor.clip() : finalColor;
 	}

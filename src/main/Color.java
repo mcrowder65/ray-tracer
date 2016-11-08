@@ -10,10 +10,12 @@ public class Color {
 	}
 
 	public Color(Color color) {
+		if (color != null) {
+			this.red = color.red;
+			this.green = color.green;
+			this.blue = color.blue;
+		}
 
-		this.red = color.red;
-		this.green = color.green;
-		this.blue = color.blue;
 	}
 
 	public Color(RGB temp) {
@@ -32,7 +34,7 @@ public class Color {
 	}
 
 	public Color multiply(RGB temp) {
-		return new Color(temp).multiply(this);
+		return this.multiply(new Color(temp));
 	}
 
 	public double brightness() {
