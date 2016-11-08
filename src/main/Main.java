@@ -17,14 +17,10 @@ public class Main {
 	static final String imageName = "scene.png";
 	static final Color backgroundColor = new Color(0.2, 0.2, 0.2);
 
-	public void compute_uvw() {
-		// w = eye.subVec(lookat);
-		// w.normalize();
-		// Vector3D up = new Vector3D(0.00424, 1.0, 0.00764);
-		// u = up.cross(w);
-		// u.normalize();
-		// v = w.cross(u);
-		// v.normalize();
+	public void compute_uvw(Vector3D eye, Vector3D lookat, Vector3D up) {
+		Vector3D w = eye.sub(lookat).normalize();
+		Vector3D u = up.cross(w).normalize();
+		Vector3D v = w.cross(u).normalize();
 	}
 
 	public static void main(String[] args) {
@@ -37,14 +33,18 @@ public class Main {
 		double ambientLight = -1;
 		Vector3D cameraPosition = null;
 		Vector3D lookAt = null;
+		Vector3D lookUp = null;
 		List<Object> sceneObjects = new ArrayList<>();
 
-		Vector3D Y = new Vector3D(0, -1, 0);
 		String type = "scenell";
 		Light lightSource = null;
+		Vector3D cameraDirection = null;
+		Vector3D cameraRight = null;
+		Vector3D cameraDown = null;
 		double FOV = -1;
 		if (type.equals("diffuse")) {
 			ambientLight = .1;
+			lookUp = new Vector3D(0, 1, 0);
 			FOV = 28;// * Math.PI / 180;
 			System.out.println(FOV);
 			cameraPosition = new Vector3D(0, 0, 1);
@@ -81,8 +81,16 @@ public class Main {
 			sceneObjects.add(sceneSphere3);
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
+
+			cameraDirection = new Vector3D(cameraPosition.sub(lookAt).negative().normalize());
+
+			cameraRight = new Vector3D(lookUp.negative().cross(cameraDirection).normalize());
+
+			cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
+
 		} else if (type.equals("scenell")) {
 			FOV = 55;// * Math.PI / 180;
+			lookUp = new Vector3D(0, 1, 0);
 			ambientLight = 0;
 			cameraPosition = new Vector3D(0, 0, 1.2);
 			lookAt = new Vector3D(0, 0, 0);
@@ -104,16 +112,22 @@ public class Main {
 			sceneObjects.add(sceneSphere1);
 			sceneObjects.add(sceneTriangle1);
 			sceneObjects.add(sceneTriangle2);
+			cameraDirection = new Vector3D(cameraPosition.sub(lookAt).negative().normalize());
 
+			cameraRight = new Vector3D(3, 0, 0);// new
+												// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
+
+			cameraDown = new Vector3D(0, 4, 0);// new
+												// Vector3D(cameraRight.cross(cameraDirection));
 		}
 		double aspectratio = (double) width / (double) height;
+		// http://learnopengl.com/#!Getting-started/Camera
 
-		Vector3D differenceBetween = new Vector3D(cameraPosition.x - lookAt.x, cameraPosition.y - lookAt.y,
-				cameraPosition.z - lookAt.z);
-		Vector3D cameraDirection = new Vector3D(differenceBetween.negative().normalize());
-		Vector3D cameraRight = new Vector3D(Y.cross(cameraDirection).normalize());
-		Vector3D cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
 		Camera sceneCamera = new Camera(cameraPosition, cameraDirection, cameraRight, cameraDown);
+		System.out.println("pos: " + cameraPosition);
+		System.out.println("dir: " + cameraDirection);
+		System.out.println("right: " + cameraRight);
+		System.out.println("down: " + cameraDown);
 		double xAmount, yAmount;
 
 		for (int y = 0; y < height; y++) {
@@ -122,8 +136,9 @@ public class Main {
 				xAmount = ((x + 0.5) / width) * aspectratio - (((width - height) / (double) height) / 2);
 				yAmount = ((height - y) + 0.5) / height;
 				Vector3D cameraRayOrigin = sceneCamera.getPosition();
-				Vector3D cameraRayDirection = cameraDirection
-						.add(cameraRight.multiply(xAmount - 0.5).add(cameraDown.multiply(yAmount - 0.5))).normalize();
+
+				Vector3D cameraRayDirection = sceneCamera.getDirection().add(sceneCamera.getRight()
+						.multiply(xAmount - 0.5).add(sceneCamera.getDown().multiply(yAmount - .5))).normalize();
 				Ray cameraRay = new Ray(cameraRayOrigin, cameraRayDirection);
 				List<Double> intersections = new ArrayList<>();
 
@@ -139,9 +154,9 @@ public class Main {
 				} else {
 					// determines the position and direction vectors at the
 					// point of intersection
-					Vector3D intersectionPosition = new Vector3D(
-							cameraRayOrigin.add(cameraRayDirection.multiply(intersections.get(indexOfWinningObject))));
-					Vector3D intersectingRayDirection = new Vector3D(cameraRayDirection);
+					Vector3D intersectionPosition = new Vector3D(cameraRay.origin
+							.add(cameraRay.direction.multiply(intersections.get(indexOfWinningObject))));
+					Vector3D intersectingRayDirection = new Vector3D(cameraRay.direction);
 					// index corresponds to an object in our scene
 					Color intersectionColor = PublicUtilities.getPixel(intersectionPosition, intersectingRayDirection,
 							(ArrayList<Object>) sceneObjects, indexOfWinningObject, lightSource, ambientLight,
