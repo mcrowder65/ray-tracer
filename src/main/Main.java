@@ -135,7 +135,7 @@ public class Main {
 			sceneSphere2.setTranslucent(new RGB(.5, .5, .5));
 			sceneSphere2.setPhongConstant(32);
 
-			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3);
+			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3, blue);
 			sceneSphere3.setTranslucent(new RGB(.1, .1, .1));
 			sceneObjects.add(sceneSphere1);
 			sceneObjects.add(sceneSphere2);

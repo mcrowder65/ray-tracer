@@ -67,18 +67,14 @@ public class PrivateUtilities {
 	final int MAX_DEPTH = 5;
 	final double bias = 1e-4;
 
-	public Color reflectiveAndTranslucent(Object winningObject, Vector3D intersectionPosition,
-			Vector3D intersectingRayDirection, ArrayList<Object> objects, Light lightSource, int depth) {
+	public Color reflective(Object winningObject, Vector3D intersectionPosition, Vector3D intersectingRayDirection,
+			ArrayList<Object> objects, Light lightSource) {
+
 		Vector3D N = winningObject.getNormalAt(intersectionPosition);
 		if (winningObject.getReflective() != null) {
-
-			double dot1 = N.dot(intersectingRayDirection.negative());
-			Vector3D scalar1 = N.multiply(dot1);
-			Vector3D add1 = scalar1.add(intersectingRayDirection);
-			Vector3D scalar2 = add1.multiply(2);
-			Vector3D add2 = intersectingRayDirection.negative().add(scalar2);
-			Vector3D reflectionDirection = add2.normalize();
-
+			// https://www.cs.unc.edu/~rademach/xroads-RT/RTarticle.html
+			double c1 = -N.dot(intersectingRayDirection);
+			Vector3D reflectionDirection = new Vector3D(intersectingRayDirection.add(N.multiply(2).multiply(c1)));
 			Ray reflectionRay = new Ray(intersectionPosition, reflectionDirection);
 
 			// determine what the ray intersects with first
@@ -108,8 +104,8 @@ public class PrivateUtilities {
 					if (shadowColor != null && shadowColor.equals(Main.black)) {
 						return Main.black;
 					}
-					Color reflectionIntersectionColor = reflectiveAndTranslucent(obj, reflectionIntersectionPosition,
-							reflectionIntersectionRayDirection, objects, lightSource, depth);
+					Color reflectionIntersectionColor = reflective(obj, reflectionIntersectionPosition,
+							reflectionIntersectionRayDirection, objects, lightSource);
 					if (reflectionIntersectionColor != null) {
 						if (obj.getColor() != null) {
 							finalColor = obj.getColor();
@@ -128,100 +124,57 @@ public class PrivateUtilities {
 				finalColor = Main.backgroundColor.multiply(winningObject.getReflective());
 			}
 			return finalColor;
-		} else if (winningObject.getTranslucent() != null && depth < MAX_DEPTH) {
-			Color finalColor = null;
-			double NdotI = intersectingRayDirection.dot(N);
-			double ior, n1, n2, cos_t;
-			if (NdotI > 0) {
-				n1 = 1;
-				n2 = 1.52;
-				N = N.negative();
-			} else {
-				n1 = 1.52;
-				n2 = 1;
-				NdotI = -NdotI;
-			}
-			ior = n2 / n1;
-			cos_t = ior * ior * (1 - NdotI * NdotI);
-			Ray ray_refracted = new Ray(intersectionPosition, intersectingRayDirection.refract(N, ior, NdotI, cos_t));
-			List<Double> refractionIntersections = new ArrayList<>();
-			for (int refractionIndex = 0; refractionIndex < objects.size(); refractionIndex++) {
-				refractionIntersections.add(objects.get(refractionIndex).findIntersection(ray_refracted));
-			}
-			int indexOfWinningObjectWithRefraction = PublicUtilities
-					.winningObjectIndex((ArrayList<Double>) refractionIntersections);
-			if (indexOfWinningObjectWithRefraction != -1) {
-				// reflection ray missed everything else
-				if (refractionIntersections.get(indexOfWinningObjectWithRefraction) > accuracy) {
-					// determine the position and direction at the point of
-					// intersection with the reflection ray
-					// the ray only affects the color if it reflected off
-					// something
-					Object obj = objects.get(indexOfWinningObjectWithRefraction);
-
-					Vector3D refractionIntersectionPosition = intersectionPosition.add(ray_refracted.origin
-							.multiply(refractionIntersections.get(indexOfWinningObjectWithRefraction)));
-					Vector3D refractionIntersectionRayDirection = ray_refracted.direction;
-
-					Color refractionIntersectionColor = reflectiveAndTranslucent(obj, refractionIntersectionPosition,
-							refractionIntersectionRayDirection, objects, lightSource, depth + 1);
-					if (refractionIntersectionColor != null) {
-						// System.out.println("refractionIntersectionColor not
-						// null");
-						finalColor = refractionIntersectionColor.multiply(winningObject.getTranslucent());
-
-					} else {
-						finalColor = new Color(winningObject.getTranslucent());
-					}
-				}
-			}
-
-			return finalColor;
 		}
 		return winningObject.getColor();
 
 	}
 
-	private double mix(double a, double b, double mix) {
-		return b * mix + a * (1 - mix);
-	}
+	public Color translucent(Object winningObject, Vector3D intersectionPosition, Vector3D intersectingRayDirection,
+			ArrayList<Object> objects, Light lightSource, int depth) {
+		Vector3D N = new Vector3D(winningObject.getNormalAt(intersectionPosition));
+		Vector3D V = new Vector3D(intersectingRayDirection);
 
-	public Color test(Object winningObject, Vector3D rayorig, Vector3D raydir, ArrayList<Object> objects,
-			Light lightSource, int depth) {
-		Vector3D N = winningObject.getNormalAt(rayorig);
-		Color surfaceColor = new Color(0);
-		Vector3D phit = rayorig;
-		Vector3D nhit = winningObject.getNormalAt(rayorig);
-		boolean inside = false;
-		if (raydir.dot(nhit) > 0) {
-			nhit = nhit.negative();
-			inside = true;
+		double c1 = -N.dot(V);
+		double n1 = 1;
+		double n2 = 2;
+		double n = n1 / n2;
+		double c2 = Math.sqrt(1 - (n * n) * (1 - (c1 * c1)));
+
+		// Rr = (n * V) + (n * c1 - c2) * N
+
+		// (n * V)
+		Vector3D first = new Vector3D(V.multiply(n));
+
+		// (n * c1 - c2)
+		Vector3D second = new Vector3D(N.multiply(n * c1 - c2));
+
+		Vector3D refractionDirection = new Vector3D(first.add(second));
+		Ray refractionRay = new Ray(intersectionPosition, refractionDirection);
+
+		// determine what the ray intersects with first
+		List<Double> refractionIntersections = new ArrayList<>();
+		for (int refractionIndex = 0; refractionIndex < objects.size(); refractionIndex++) {
+			refractionIntersections.add(objects.get(refractionIndex).findIntersection(refractionRay));
 		}
-		if ((winningObject.getTranslucent() != null || winningObject.getReflective() != null) && depth < MAX_DEPTH) {
-			double facingratio = raydir.negative().dot(nhit);
-			double fresneleffect = mix(Math.pow(1 - facingratio, 3), 1, .1);
-			Vector3D refldir = raydir.sub(nhit.multiply(2).multiply(raydir.dot(nhit)));
-			Color reflection = test(winningObject, phit.add(nhit.multiply(bias)), refldir, objects, lightSource,
-					depth + 1);
+		int indexOfWinningObjectWithRefraction = PublicUtilities
+				.winningObjectIndex((ArrayList<Double>) refractionIntersections);
+		Color finalColor = null;
+		if (indexOfWinningObjectWithRefraction != -1) {
+			// reflection ray missed everything else
+			if (refractionIntersections.get(indexOfWinningObjectWithRefraction) > accuracy) {
+				Object obj = objects.get(indexOfWinningObjectWithRefraction);
+				Vector3D refractionIntersectionPosition = intersectionPosition.add(
+						refractionDirection.multiply(refractionIntersections.get(indexOfWinningObjectWithRefraction)));
+				Vector3D refractionIntersectionRayDirection = refractionDirection;
 
-			// TODO reflection trace
-			Color refraction = new Color(0);
-			if (winningObject.getTranslucent() != null) {
-				double ior = 1.1;
-				double eta = inside ? ior : 1 / ior;
-				double cosi = nhit.negative().dot(raydir);
-				double k = 1 - eta * eta * (1 - cosi * cosi);
-				Vector3D refrdir = raydir.multiply(eta).add(nhit.multiply(eta * cosi - Math.sqrt(k))).normalize();
-				refraction = test(winningObject, phit.sub(nhit.multiply(bias)), refrdir, objects, lightSource,
-						depth + 1);
+				Color refractionIntersectionColor = translucent(obj, refractionIntersectionPosition,
+						refractionIntersectionRayDirection, objects, lightSource, depth + 1);
+
+				finalColor = refractionIntersectionColor.multiply(winningObject.getTranslucent());
 			}
-			Color reflectionPart = reflection.multiply(fresneleffect);
-			Color refractionPart = winningObject.getTranslucent() != null
-					? refraction.multiply(1 - fresneleffect).multiply(winningObject.getTranslucent()) : new Color(1);
-
-			surfaceColor = reflectionPart.multiply(refractionPart);
 		}
-		return surfaceColor;
+		return finalColor;
 
 	}
+
 }
