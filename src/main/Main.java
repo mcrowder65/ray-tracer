@@ -18,8 +18,6 @@ public class Main {
 	static final Color backgroundColor = new Color(0.2, 0.2, 0.2);
 
 	public static void main(String[] args) {
-		// TODO figure out FOV
-		// TODO figure out if egbert thinks my diffuse is close enough
 		PublicUtilities.exec("rm " + imageName);
 		PublicUtilities.exec("pkill Preview");
 
@@ -30,7 +28,7 @@ public class Main {
 		Vector3D lookUp = null;
 		List<Object> sceneObjects = new ArrayList<>();
 
-		String type = "scenell";
+		String type = "diffuse";
 		Light lightSource = null;
 		Vector3D cameraDirection = null;
 		Vector3D cameraRight = null;
@@ -51,8 +49,8 @@ public class Main {
 			sceneSphere1.setPhongConstant(4);
 
 			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
-			sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
-			// sceneSphere2.setTranslucent(new RGB(.5, .5, .5));
+			// sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
+			sceneSphere2.setTranslucent(new RGB(.5, .5, .5));
 			sceneSphere2.setPhongConstant(32);
 
 			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3, green);

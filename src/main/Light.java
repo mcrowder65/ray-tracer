@@ -56,4 +56,9 @@ public class Light {
 		this.color = new Color(color);
 	}
 
+	public Light(Light lightSource) {
+		this.position = new Vector3D(lightSource.getPosition());
+		this.color = new Color(lightSource.getColor());
+	}
+
 }

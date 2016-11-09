@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class PublicUtilities {
 	private static PrivateUtilities privateUtilities = new PrivateUtilities();
 
-	static int winningObjectIndex(ArrayList<Double> intersections) {
+	static public int winningObjectIndex(ArrayList<Double> intersections) {
 
 		// prevent unnessary calculations
 		if (intersections.size() == 0) {
@@ -50,7 +50,7 @@ public class PublicUtilities {
 		}
 	}
 
-	static void exec(String command) {
+	static public void exec(String command) {
 		try {
 			Runtime.getRuntime().exec(command);
 		} catch (IOException e) {
@@ -58,7 +58,7 @@ public class PublicUtilities {
 		}
 	}
 
-	static Color getPixel(Vector3D intersectionPosition, Vector3D intersectionRayDirection,
+	static public Color getPixel(Vector3D intersectionPosition, Vector3D intersectionRayDirection,
 			ArrayList<Object> sceneObjects, int indexOfWinningObject, Light lightSource, double ambientLight,
 			Vector3D e) {
 		Object winningObject = sceneObjects.get(indexOfWinningObject);
@@ -71,7 +71,7 @@ public class PublicUtilities {
 						lightSource, ambientLight, e);
 		} else if (winningObject.getReflective() != null || winningObject.getTranslucent() != null) {
 			finalColor = privateUtilities.reflectiveAndTranslucent(winningObject, intersectionPosition,
-					intersectionRayDirection, sceneObjects, lightSource);
+					intersectionRayDirection, sceneObjects, lightSource, 0);
 		}
 
 		return finalColor != null ? finalColor.clip() : finalColor;
