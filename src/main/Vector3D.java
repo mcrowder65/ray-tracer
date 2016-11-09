@@ -33,6 +33,14 @@ public class Vector3D {
 		return true;
 	}
 
+	public Vector3D refract(Vector3D N, double n, double NdotI, double cos_t) {
+		cos_t = (float) Math.sqrt(1.0 - cos_t);
+
+		if (cos_t < 1.0f)
+			return multiply(n).add(N.multiply(n * NdotI - cos_t));
+		return N;
+	}
+
 	public double x, y, z;
 
 	public Vector3D(int temp) {

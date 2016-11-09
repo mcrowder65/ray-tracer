@@ -28,7 +28,7 @@ public class Main {
 		Vector3D lookUp = null;
 		List<Object> sceneObjects = new ArrayList<>();
 
-		String type = "diffuse";
+		String type = "scenell";
 		Light lightSource = null;
 		Vector3D cameraDirection = null;
 		Vector3D cameraRight = null;
@@ -49,7 +49,7 @@ public class Main {
 			sceneSphere1.setPhongConstant(4);
 
 			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
-			// sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
+			sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
 			sceneSphere2.setTranslucent(new RGB(.5, .5, .5));
 			sceneSphere2.setPhongConstant(32);
 
@@ -117,6 +117,42 @@ public class Main {
 
 			cameraDown = new Vector3D(0, fovScale * 5, 0);
 			// new Vector3D(cameraRight.cross(cameraDirection));
+		} else if (type.equals("refract")) {
+			ambientLight = .1;
+			lookUp = new Vector3D(0, 1, 0);
+			FOV = 28;
+			cameraPosition = new Vector3D(0, 0, 1);
+			lookAt = new Vector3D(0, 0, 0);
+
+			Vector3D lightPosition = new Vector3D(1, 0, 0);
+			lightSource = new Light(lightPosition, white);
+			// spheres
+			Sphere sceneSphere1 = new Sphere(new Vector3D(.35, 0, -.1), 0.05, white);
+			sceneSphere1.setSpecularHighlight(new RGB(1, 1, 1));
+			sceneSphere1.setPhongConstant(4);
+
+			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
+			sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
+			sceneSphere2.setTranslucent(new RGB(.5, .5, .5));
+			sceneSphere2.setPhongConstant(32);
+
+			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3);
+			sceneSphere3.setTranslucent(new RGB(.1, .1, .1));
+			sceneObjects.add(sceneSphere1);
+			sceneObjects.add(sceneSphere2);
+			sceneObjects.add(sceneSphere3);
+
+			cameraDirection = new Vector3D(cameraPosition.sub(lookAt).negative().normalize());
+
+			cameraRight = new Vector3D(lookUp.negative().cross(cameraDirection).normalize());
+
+			cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
+			double fovScale = Math.atan(Math.toRadians(FOV));
+			cameraRight = new Vector3D(fovScale * 2.5, 0, 0);
+			// new
+			// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
+
+			cameraDown = new Vector3D(0, fovScale * 2.5, 0);
 		}
 
 		double aspectratio = (double) width / (double) height;

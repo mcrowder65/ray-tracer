@@ -70,8 +70,12 @@ public class PublicUtilities {
 				finalColor = privateUtilities.specular(winningObject.getColor(), winningObject, intersectionPosition,
 						lightSource, ambientLight, e);
 		} else if (winningObject.getReflective() != null || winningObject.getTranslucent() != null) {
+			// TODO fix reflection by changing this function back.
 			finalColor = privateUtilities.reflectiveAndTranslucent(winningObject, intersectionPosition,
 					intersectionRayDirection, sceneObjects, lightSource, 0);
+			// finalColor = privateUtilities.test(winningObject,
+			// intersectionPosition, intersectionRayDirection,
+			// sceneObjects, lightSource, 0);
 		}
 
 		return finalColor != null ? finalColor.clip() : finalColor;
