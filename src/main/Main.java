@@ -14,21 +14,20 @@ public class Main {
 	static final Color red = new Color(1, 0, 0);
 	static int width = 515;
 	static int height = 516;
-	static final String imageName = "scene.png";
 	static final Color backgroundColor = new Color(0.2, 0.2, 0.2);
 
 	public static void main(String[] args) {
-		PublicUtilities.exec("rm " + imageName);
-		PublicUtilities.exec("pkill Preview");
+		// PublicUtilities.exec("rm " + imageName);
+		// PublicUtilities.exec("pkill Preview");
+		String type = "mine";
 
-		Image image = new Image(imageName, width, height);
+		Image image = new Image(type + ".png", width, height);
 		double ambientLight = -1;
 		Vector3D cameraPosition = null;
 		Vector3D lookAt = null;
 		Vector3D lookUp = null;
 		List<Object> sceneObjects = new ArrayList<>();
 
-		String type = "scenell";
 		Light lightSource = null;
 		Vector3D cameraDirection = null;
 		Vector3D cameraRight = null;
@@ -80,8 +79,6 @@ public class Main {
 			cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
 			double fovScale = Math.atan(Math.toRadians(FOV));
 			cameraRight = new Vector3D(fovScale * 2.5, 0, 0);
-			// new
-			// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
 
 			cameraDown = new Vector3D(0, fovScale * 2.5, 0);
 		} else if (type.equals("scenell")) {
@@ -111,47 +108,71 @@ public class Main {
 			cameraDirection = new Vector3D(cameraPosition.sub(lookAt).negative().normalize());
 			double fovScale = Math.atan(Math.toRadians(FOV));
 			cameraRight = new Vector3D(fovScale * 4, 0, 0);
-			// new
-			// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
 
 			cameraDown = new Vector3D(0, fovScale * 5, 0);
-			// new Vector3D(cameraRight.cross(cameraDirection));
-		} else if (type.equals("refract")) {
+		} else if (type.equals("mine")) {
 			ambientLight = .1;
 			lookUp = new Vector3D(0, 1, 0);
-			FOV = 28;
+			FOV = 55;
 			cameraPosition = new Vector3D(0, 0, 1);
 			lookAt = new Vector3D(0, 0, 0);
 
-			Vector3D lightPosition = new Vector3D(1, 0, 0);
+			Vector3D lightPosition = new Vector3D(0, 1, 0);
 			lightSource = new Light(lightPosition, white);
-			// spheres
-			Sphere sceneSphere1 = new Sphere(new Vector3D(.35, 0, -.1), 0.05, white);
-			sceneSphere1.setSpecularHighlight(new RGB(1, 1, 1));
-			sceneSphere1.setPhongConstant(4);
 
-			Sphere sceneSphere2 = new Sphere(new Vector3D(.2, 0, -.1), 0.075, red);
-			sceneSphere2.setSpecularHighlight(new RGB(.5, 1, .5));
-			sceneSphere2.setTranslucent(new RGB(.5, .5, .5));
-			sceneSphere2.setPhongConstant(32);
+			Sphere sceneSphere1 = new Sphere(new Vector3D(-.25, 0, 0), 0.05);
+			sceneSphere1.setReflective(new RGB(.75, .75, .75));
 
-			Sphere sceneSphere3 = new Sphere(new Vector3D(-.6, 0, 0), 0.3, blue);
-			sceneSphere3.setTranslucent(new RGB(.1, .1, .1));
+			Sphere sceneSphere2 = new Sphere(new Vector3D(0, .3, 0), 0.2);
+			sceneSphere2.setReflective(new RGB(.75, .75, .75));
+
+			Sphere sceneSphere3 = new Sphere(new Vector3D(.25, 0, 0), 0.05);
+			sceneSphere3.setReflective(new RGB(.75, .75, .75));
+
+			Triangle sceneTriangle1 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(1, .5, 0),
+					new Vector3D(0, -.5, -.5), blue);
+			sceneTriangle1.setSpecularHighlight(new RGB(1, 1, 1));
+			sceneTriangle1.setPhongConstant(4);
+
+			Triangle sceneTriangle2 = new Triangle(new Vector3D(0, -.5, .5), new Vector3D(0, -.5, -.5),
+					new Vector3D(-1, .5, 0), yellow);
+			sceneTriangle2.setSpecularHighlight(new RGB(1, 1, 1));
+			sceneTriangle2.setPhongConstant(4);
+
+			Sphere sceneSphere4 = new Sphere(new Vector3D(-.4, 0.5, 0), 0.05);
+			sceneSphere4.setReflective(new RGB(.75, .75, .75));
+
+			Sphere sceneSphere5 = new Sphere(new Vector3D(.4, .5, 0), 0.05);
+			sceneSphere5.setReflective(new RGB(.75, .75, .75));
+
+			Sphere sceneSphere6 = new Sphere(new Vector3D(-.6, 0.8, 0), 0.05);
+			sceneSphere6.setReflective(new RGB(.75, .75, .75));
+
+			Sphere sceneSphere7 = new Sphere(new Vector3D(.6, .8, 0), 0.05);
+			sceneSphere7.setReflective(new RGB(.75, .75, .75));
+
+			Sphere sceneSphere8 = new Sphere(new Vector3D(-.8, 1, 0), 0.05);
+			sceneSphere8.setReflective(new RGB(.75, .75, .75));
+
+			Sphere sceneSphere9 = new Sphere(new Vector3D(.8, 1, 0), 0.05);
+			sceneSphere9.setReflective(new RGB(.75, .75, .75));
 			sceneObjects.add(sceneSphere1);
 			sceneObjects.add(sceneSphere2);
 			sceneObjects.add(sceneSphere3);
+			sceneObjects.add(sceneSphere4);
+			sceneObjects.add(sceneSphere5);
+			sceneObjects.add(sceneSphere6);
+			sceneObjects.add(sceneSphere7);
+			sceneObjects.add(sceneSphere8);
+			sceneObjects.add(sceneSphere9);
+			sceneObjects.add(sceneTriangle1);
+			sceneObjects.add(sceneTriangle2);
 
 			cameraDirection = new Vector3D(cameraPosition.sub(lookAt).negative().normalize());
-
-			cameraRight = new Vector3D(lookUp.negative().cross(cameraDirection).normalize());
-
-			cameraDown = new Vector3D(cameraRight.cross(cameraDirection));
 			double fovScale = Math.atan(Math.toRadians(FOV));
-			cameraRight = new Vector3D(fovScale * 2.5, 0, 0);
-			// new
-			// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
+			cameraRight = new Vector3D(fovScale * 4, 0, 0);
 
-			cameraDown = new Vector3D(0, fovScale * 2.5, 0);
+			cameraDown = new Vector3D(0, fovScale * 5, 0);
 		}
 
 		double aspectratio = (double) width / (double) height;
@@ -200,10 +221,10 @@ public class Main {
 		}
 
 		image.write("PNG");
-		PublicUtilities.exec("open " + imageName);
-		if (!type.equals("tutorial")) {
-			PublicUtilities.exec("open examples/" + type + ".png");
-		}
+		// PublicUtilities.exec("open " + imageName);
+		// if (!type.equals("tutorial")) {
+		// PublicUtilities.exec("open examples/" + type + ".png");
+		// }
 
 	}
 
