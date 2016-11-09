@@ -110,7 +110,6 @@ public class Main {
 			sceneObjects.add(sceneTriangle2);
 			cameraDirection = new Vector3D(cameraPosition.sub(lookAt).negative().normalize());
 			double fovScale = Math.atan(Math.toRadians(FOV));
-			System.out.println("fovScale: " + fovScale);
 			cameraRight = new Vector3D(fovScale * 4, 0, 0);
 			// new
 			// Vector3D(lookUp.negative().cross(cameraDirection).normalize());
@@ -158,10 +157,6 @@ public class Main {
 		double aspectratio = (double) width / (double) height;
 
 		Camera sceneCamera = new Camera(cameraPosition, cameraDirection, cameraRight, cameraDown);
-		System.out.println("pos: " + cameraPosition);
-		System.out.println("dir: " + cameraDirection);
-		System.out.println("right: " + cameraRight);
-		System.out.println("down: " + cameraDown);
 		double xAmount, yAmount;
 
 		for (int y = 0; y < height; y++) {

@@ -129,6 +129,7 @@ public class PrivateUtilities {
 			}
 			return finalColor;
 		} else if (winningObject.getTranslucent() != null && depth < MAX_DEPTH) {
+			Color finalColor = null;
 			double NdotI = intersectingRayDirection.dot(N);
 			double ior, n1, n2, cos_t;
 			if (NdotI > 0) {
@@ -143,11 +144,42 @@ public class PrivateUtilities {
 			ior = n2 / n1;
 			cos_t = ior * ior * (1 - NdotI * NdotI);
 			Ray ray_refracted = new Ray(intersectionPosition, intersectingRayDirection.refract(N, ior, NdotI, cos_t));
-			Color finalColor = reflectiveAndTranslucent(winningObject, ray_refracted.origin, ray_refracted.direction,
-					objects, lightSource, depth + 1);
+			List<Double> refractionIntersections = new ArrayList<>();
+			for (int refractionIndex = 0; refractionIndex < objects.size(); refractionIndex++) {
+				refractionIntersections.add(objects.get(refractionIndex).findIntersection(ray_refracted));
+			}
+			int indexOfWinningObjectWithRefraction = PublicUtilities
+					.winningObjectIndex((ArrayList<Double>) refractionIntersections);
+			if (indexOfWinningObjectWithRefraction != -1) {
+				// reflection ray missed everything else
+				if (refractionIntersections.get(indexOfWinningObjectWithRefraction) > accuracy) {
+					// determine the position and direction at the point of
+					// intersection with the reflection ray
+					// the ray only affects the color if it reflected off
+					// something
+					Object obj = objects.get(indexOfWinningObjectWithRefraction);
+
+					Vector3D refractionIntersectionPosition = intersectionPosition.add(ray_refracted.origin
+							.multiply(refractionIntersections.get(indexOfWinningObjectWithRefraction)));
+					Vector3D refractionIntersectionRayDirection = ray_refracted.direction;
+
+					Color refractionIntersectionColor = reflectiveAndTranslucent(obj, refractionIntersectionPosition,
+							refractionIntersectionRayDirection, objects, lightSource, depth + 1);
+					if (refractionIntersectionColor != null) {
+						// System.out.println("refractionIntersectionColor not
+						// null");
+						finalColor = refractionIntersectionColor.multiply(winningObject.getTranslucent());
+
+					} else {
+						finalColor = new Color(winningObject.getTranslucent());
+					}
+				}
+			}
+
 			return finalColor;
 		}
 		return winningObject.getColor();
+
 	}
 
 	private double mix(double a, double b, double mix) {
